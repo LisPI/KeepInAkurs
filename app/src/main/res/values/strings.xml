@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Держу в А-Курсе</string>
+    <string name="initMessage">Waiting</string>\
+    <string name="updateMessage">Updating</string>
+</resources>
