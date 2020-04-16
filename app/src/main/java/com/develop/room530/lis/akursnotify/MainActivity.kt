@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
             findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh).isRefreshing = false
         }
 
-
         if (savedInstanceState != null) {
             currency.value = savedInstanceState.getString(KEY_CURRENCY)
             currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
@@ -59,12 +58,18 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        // TODO: get update 1 time per day for example
+        // TODO: make red/green triangle as in Lesson
         CoroutineScope(Dispatchers.Main).launch {
             val doc = withContext(Dispatchers.IO) {
                 Jsoup.connect("https://www.alfabank.by/services/a-kurs/").get()
             }
             currency.value = doc.select(".curr-table tr:first-of-type td:first-of-type").text()
-            currencyNB.value = getString(R.string.NB) + " : " + doc.select(".curr-table tr:last-of-type td:first-of-type").text()
+
+            val nbrb = withContext(Dispatchers.IO) {
+                RetrofitClass.service?.getUsdCurrency()
+            }
+            currencyNB.value = getString(R.string.NB) + " : " + nbrb?.Cur_OfficialRate
         }
     }
 
