@@ -7,7 +7,7 @@ object RetrofitClass{
     private fun retrofit() : Retrofit = Retrofit.Builder()
         .baseUrl("https://www.nbrb.by/")
         .addConverterFactory(GsonConverterFactory.create())
-        .build();
+        .build()
 
-    val service: NbrbApi? = retrofit().create(NbrbApi::class.java);
+    val service: NbrbApi? = retrofit().create(NbrbApi::class.java)
 }
