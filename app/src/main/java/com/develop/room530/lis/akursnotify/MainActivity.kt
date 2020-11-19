@@ -9,6 +9,10 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +52,14 @@ class MainActivity : AppCompatActivity() {
             currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
         }
         else getCurrency()
+
+        printChart()
+    }
+
+    private fun printChart() {
+        val chart = findViewById<LineChart>(R.id.chart)
+        chart.data = LineData(LineDataSet(listOf(Entry(1F, 2F), Entry(2F, 6F), Entry(4F, 3F)),"myLabel"))
+        chart.invalidate()
     }
 
     private fun getCurrency(){
@@ -59,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // TODO: get update 1 time per day for example
-        // TODO: make red/green triangle as in Lesson
+        // TODO: make red/green triangle as in Lesson - selectors
         CoroutineScope(Dispatchers.Main).launch {
             val doc = withContext(Dispatchers.IO) {
                 Jsoup.connect("https://www.alfabank.by/services/a-kurs/").get()
