@@ -9,5 +9,5 @@ object RetrofitClass{
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val service: NbrbApi? = retrofit().create(NbrbApi::class.java)
+    val service: NbrbApi = retrofit().create(NbrbApi::class.java)
 }
