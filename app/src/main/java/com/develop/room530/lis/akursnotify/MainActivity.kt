@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -55,6 +56,11 @@ class MainActivity : AppCompatActivity() {
             getCurrency()
             printChart()
             findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh).isRefreshing = false
+
+
+            val sh = applicationContext.getSharedPreferences("1", Context.MODE_PRIVATE)
+            val t = sh.getString("cur", null)
+            Toast.makeText(applicationContext, "$t now ", Toast.LENGTH_SHORT).show()
         }
 
         if (savedInstanceState != null) {
