@@ -6,10 +6,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.develop.room530.lis.akursnotify.database.Nbrbkurs
+import com.develop.room530.lis.akursnotify.database.getDatabase
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -56,11 +57,6 @@ class MainActivity : AppCompatActivity() {
             getCurrency()
             printChart()
             findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh).isRefreshing = false
-
-
-            val sh = applicationContext.getSharedPreferences("1", Context.MODE_PRIVATE)
-            val t = sh.getString("cur", null)
-            Toast.makeText(applicationContext, "$t now ", Toast.LENGTH_SHORT).show()
         }
 
         if (savedInstanceState != null) {
@@ -114,17 +110,26 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // TODO: get update 1 time per day for example
         // TODO: make red/green triangle as in Lesson - selectors
         CoroutineScope(Dispatchers.Main).launch {
 
             val doc = withContext(Dispatchers.IO) {
-                Jsoup.connect("https://www.alfabank.by/services/a-kurs/").get()
+                try {
+                    Jsoup.connect("https://www.alfabank.by/exchange/digital/").get()
+                }
+                catch (e: Exception){
+                    null
+                }
             }
-            currency.value = doc.select(".curr-table tr:first-of-type td:first-of-type").text()
+            // val t = doc?.select(".info-section__main")?.text()
+            // val t2 = doc?.select("#app > div > div:nth-child(1) > section > div > div:nth-child(2) > div > div:nth-child(2) > div.info-section__main > div > div > div > div > div:nth-child(1) > div.price__value")
+            currency.value = doc?.select("#app div div:nth-child(1) section div div:nth-child(2) div div:nth-child(2) div.info-section__main div div div div div:nth-child(1) div.price__value span:nth-child(1)").toString()
 
             val nbrb = withContext(Dispatchers.IO) {
                 RetrofitClass.service.getUsdCurrency()
+            }
+            withContext(Dispatchers.IO) {
+                getDatabase(applicationContext).nbrbDatabaseDao.insertNbrbkurs(Nbrbkurs(kurs = nbrb.Cur_OfficialRate.toString(), date = nbrb.Date))
             }
             currencyNB.value = getString(R.string.NB) + " : " + nbrb.Cur_OfficialRate
         }

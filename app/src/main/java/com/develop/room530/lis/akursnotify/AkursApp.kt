@@ -30,7 +30,7 @@ class AkursApp: Application() {
             .build()
 
         val repeatingRequest
-                = PeriodicWorkRequestBuilder<MyWorker>(5, TimeUnit.MINUTES)
+                = PeriodicWorkRequestBuilder<MyWorker>(15, TimeUnit.MINUTES)
             //.setConstraints(constraints)
             .build()
 

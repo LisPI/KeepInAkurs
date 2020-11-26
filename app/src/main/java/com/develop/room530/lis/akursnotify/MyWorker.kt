@@ -4,10 +4,14 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.develop.room530.lis.akursnotify.database.Akurs
+import com.develop.room530.lis.akursnotify.database.getDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
-import kotlin.random.Random
+import java.util.*
 
-class MyWorker(private val appContext: Context, workerParams: WorkerParameters):
+class MyWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
 
     companion object {
@@ -16,17 +20,19 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters):
 
     override suspend fun doWork(): Result {
 
-        // Do the work here--in this case, upload the images.
         val doc = Jsoup.connect("https://www.alfabank.by/services/a-kurs/").get()
         val currency = doc.select(".curr-table tr:first-of-type td:first-of-type").text()
 
-        val sh = appContext.getSharedPreferences("1", Context.MODE_PRIVATE)
-        with(sh.edit()) {
-            putString("cur" + Random.nextInt(1,100).toString(), currency)
-            apply()
+        withContext(Dispatchers.IO) {
+            getDatabase(appContext).akursDatabaseDao.insertAkurs(
+                akurs = Akurs(
+                    kurs = currency,
+                    date = Date().toString()
+                )
+            )
         }
 
-        Log.d("1", currency)
+        Log.d("currency", currency)
 
         // Indicate whether the work finished successfully with the Result
         return Result.success()

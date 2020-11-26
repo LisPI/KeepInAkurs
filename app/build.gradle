@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-parcelize'
 
@@ -40,7 +41,7 @@ dependencies {
 
     implementation 'org.jsoup:jsoup:1.12.2'
 
-    //Retrofit
+    // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
@@ -51,6 +52,14 @@ dependencies {
     // Workmanager
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
-    //charts
+    // Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // room
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
 }
