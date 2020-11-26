@@ -8,7 +8,6 @@ import com.develop.room530.lis.akursnotify.database.Akurs
 import com.develop.room530.lis.akursnotify.database.getDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
 import java.util.*
 
 class MyWorker(private val appContext: Context, workerParams: WorkerParameters) :
@@ -20,8 +19,7 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
 
     override suspend fun doWork(): Result {
 
-        val doc = Jsoup.connect("https://www.alfabank.by/services/a-kurs/").get()
-        val currency = doc.select(".curr-table tr:first-of-type td:first-of-type").text()
+        val currency = getAkursRate()
 
         withContext(Dispatchers.IO) {
             getDatabase(appContext).akursDatabaseDao.insertAkurs(

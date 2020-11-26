@@ -9,19 +9,16 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.develop.room530.lis.akursnotify.database.Nbrbkurs
 import com.develop.room530.lis.akursnotify.database.getDatabase
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -76,19 +73,26 @@ class MainActivity : AppCompatActivity() {
         val end = getDateMinusFormat(getDateWithOffset(+1))
 
         CoroutineScope(Dispatchers.Main).launch {
-            val currencyHistory = withContext(Dispatchers.IO){
+            val currencyHistory = withContext(Dispatchers.IO) {
                 RetrofitClass.service.getUsdCurrencyHistory(start, end)
             }
 
-            chart.xAxis.valueFormatter =
-                IndexAxisValueFormatter(currencyHistory.map { it.Date.substring(5, 10) })
-            chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
+            val rates = withContext(Dispatchers.IO) { getDatabase(applicationContext).akursDatabaseDao.getAkurs()}
+            val dataset = LineDataSet(rates.mapIndexed { index, akurs ->
+                Entry(
+                    index.toFloat(),
+                    akurs.kurs.toFloat()
+                )
+            }, "USD по НБ РБ")
+
+            /*chart.xAxis.valueFormatter = IndexAxisValueFormatter(currencyHistory.map { it.Date.substring(5, 10) })
             val dataset = LineDataSet(currencyHistory.mapIndexed { index, nbrbModel ->
                 Entry(
                     index.toFloat(),
                     nbrbModel.Cur_OfficialRate
                 )
-            }, "USD по НБ РБ")
+            }, "USD по НБ РБ")*/
+            chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             dataset.color = Color.RED
             dataset.valueTextSize = 12F
             val data = LineData(dataset)
@@ -112,26 +116,14 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: make red/green triangle as in Lesson - selectors
         CoroutineScope(Dispatchers.Main).launch {
-
-            val doc = withContext(Dispatchers.IO) {
-                try {
-                    Jsoup.connect("https://www.alfabank.by/exchange/digital/").get()
-                }
-                catch (e: Exception){
-                    null
-                }
-            }
-            // val t = doc?.select(".info-section__main")?.text()
-            // val t2 = doc?.select("#app > div > div:nth-child(1) > section > div > div:nth-child(2) > div > div:nth-child(2) > div.info-section__main > div > div > div > div > div:nth-child(1) > div.price__value")
-            currency.value = doc?.select("#app div div:nth-child(1) section div div:nth-child(2) div div:nth-child(2) div.info-section__main div div div div div:nth-child(1) div.price__value span:nth-child(1)").toString()
+            val akurs = getAkursRate()
 
             val nbrb = withContext(Dispatchers.IO) {
                 RetrofitClass.service.getUsdCurrency()
             }
-            withContext(Dispatchers.IO) {
-                getDatabase(applicationContext).nbrbDatabaseDao.insertNbrbkurs(Nbrbkurs(kurs = nbrb.Cur_OfficialRate.toString(), date = nbrb.Date))
-            }
+
             currencyNB.value = getString(R.string.NB) + " : " + nbrb.Cur_OfficialRate
+            currency.value = akurs
         }
     }
 

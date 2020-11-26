@@ -46,7 +46,7 @@ data class Nbrbkurs(
 @Dao
 interface AkursDao{
     @Query("select * from akurs")
-    fun getAkurs(): LiveData<List<Akurs>>
+    fun getAkurs(): List<Akurs>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAkurs(akurs: Akurs)
