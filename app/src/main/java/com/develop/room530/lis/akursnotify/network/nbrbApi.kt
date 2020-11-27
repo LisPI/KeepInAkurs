@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.network
 
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -36,7 +36,7 @@ class AkursApp: Application() {
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             MyWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.KEEP,
             repeatingRequest)
     }
 

@@ -5,18 +5,17 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import org.jsoup.Jsoup
 
-// TODO must return Result structure
 suspend fun getAkursRate() : String{
     val doc = withContext(Dispatchers.IO) {
         try {
-            Jsoup.connect("https://www.alfabank.by/exchange/digital/").get()
+            Result.Success(Jsoup.connect("https://www.alfabank.by/exchange/digital/").get())
         } catch (e: Exception) {
-            null
+            Result.Error(e)
         }
     }
-    doc?.let {
+    if(doc is Result.Success){
         val jsonString =
-            doc.select(".container-main section div div:nth-child(2)").attr("data-initial")
+            doc.data.select(".container-main section div div:nth-child(2)").attr("data-initial")
 
         val title = JSONObject(jsonString).getJSONArray("initialItems").getJSONObject(1)
             .getString("title")
@@ -28,5 +27,5 @@ suspend fun getAkursRate() : String{
             .getJSONObject("value").getJSONArray("exchangeRate").getJSONObject(0)
             .getJSONObject("purchase").getString("value")
     }
-    return "-1"
+    return doc.toString()
 }

@@ -1,7 +1,6 @@
 package com.develop.room530.lis.akursnotify.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.*
 
 
@@ -58,7 +57,7 @@ interface AkursDao{
 @Dao
 interface NbrbDao{
     @Query("select * from nbrbkurs")
-    fun getNbrbkurs(): LiveData<List<Nbrbkurs>>
+    fun getNbrbkurs(): List<Nbrbkurs> // TODO live data
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNbrbkurs(vararg nbrbkurs: Nbrbkurs)

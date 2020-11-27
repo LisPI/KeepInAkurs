@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

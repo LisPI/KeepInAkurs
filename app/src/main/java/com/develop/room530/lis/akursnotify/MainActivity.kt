@@ -10,11 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.develop.room530.lis.akursnotify.database.getDatabase
+import com.develop.room530.lis.akursnotify.network.RetrofitClass
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,28 +76,31 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             val currencyHistory = withContext(Dispatchers.IO) {
-                RetrofitClass.service.getUsdCurrencyHistory(start, end)
+                // RetrofitClass.service.getUsdCurrencyHistory(start, end)
+                getDatabase(applicationContext).nbrbDatabaseDao.getNbrbkurs()
             }
 
             val rates = withContext(Dispatchers.IO) { getDatabase(applicationContext).akursDatabaseDao.getAkurs()}
-            val dataset = LineDataSet(rates.mapIndexed { index, akurs ->
+            val ADataset = LineDataSet(rates.mapIndexed { index, akurs ->
                 Entry(
                     index.toFloat(),
-                    akurs.kurs.toFloat()
+                    akurs.kurs.replace(',','.').toFloat()
+                )
+            }, "USD по А-Курс")
+
+            ADataset.color = Color.RED
+            ADataset.valueTextSize = 12F
+
+            // chart.xAxis.valueFormatter = IndexAxisValueFormatter(currencyHistory.map { it.Date.substring(5, 10) })
+            val NbDataset = LineDataSet(currencyHistory.mapIndexed { index, nbrbModel ->
+                Entry(
+                    index.toFloat(),
+                    nbrbModel.kurs.toFloat()
                 )
             }, "USD по НБ РБ")
-
-            /*chart.xAxis.valueFormatter = IndexAxisValueFormatter(currencyHistory.map { it.Date.substring(5, 10) })
-            val dataset = LineDataSet(currencyHistory.mapIndexed { index, nbrbModel ->
-                Entry(
-                    index.toFloat(),
-                    nbrbModel.Cur_OfficialRate
-                )
-            }, "USD по НБ РБ")*/
+            val datasets = listOf<ILineDataSet>(NbDataset, ADataset)
             chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-            dataset.color = Color.RED
-            dataset.valueTextSize = 12F
-            val data = LineData(dataset)
+            val data = LineData(datasets)
             data.isHighlightEnabled = false
             chart.description.text = ""
             chart.data = data
