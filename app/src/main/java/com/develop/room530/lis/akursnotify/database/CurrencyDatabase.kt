@@ -65,3 +65,5 @@ interface NbrbDao{
     @Query("DELETE FROM nbrbkurs")
     suspend fun deleteAll()
 }
+
+// TODO viewpager2 - 2 different chart and old screen with big fontsize
