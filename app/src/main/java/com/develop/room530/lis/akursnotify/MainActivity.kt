@@ -84,8 +84,7 @@ class MainActivity : AppCompatActivity() {
             val ADataset = LineDataSet(rates.mapIndexed { index, akurs ->
                 Entry(
                     index.toFloat(),
-                    akurs.kurs.replace(',','.').toFloat()
-                )
+                    akurs.kurs.replace(',','.').toFloatOrNull() ?: -1.0F)
             }, "USD по А-Курс")
 
             ADataset.color = Color.RED
