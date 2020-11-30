@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.develop.room530.lis.akursnotify.database.getDatabase
-import com.develop.room530.lis.akursnotify.network.RetrofitClass
+import com.develop.room530.lis.akursnotify.network.AlfaApi
+import com.develop.room530.lis.akursnotify.network.NbrbApi
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -123,7 +124,11 @@ class MainActivity : AppCompatActivity() {
             val akurs = getAkursRate()
 
             val nbrb = withContext(Dispatchers.IO) {
-                RetrofitClass.service.getUsdCurrency()
+                NbrbApi.service.getUsdCurrency()
+            }
+
+            val t = withContext(Dispatchers.IO) {
+                AlfaApi.service.getAkursUsdCurrency("28.11.2020")
             }
 
             currencyNB.value = getString(R.string.NB) + " : " + nbrb.Cur_OfficialRate
