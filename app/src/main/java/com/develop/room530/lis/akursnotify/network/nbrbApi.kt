@@ -16,7 +16,7 @@ data class NbrbModel(
 interface NbrbApiService{
     @GET("api/exrates/rates/145")
     suspend fun getUsdRate(
-        @Query(value = "ondate") to : String = getDateMinusFormat(getDateWithOffset(0))   // 2020-11-30
+        @Query(value = "ondate") date : String = getDateMinusFormat(getDateWithOffset(0))   // 2020-11-30
     ): NbrbModel
 
     @GET("api/exrates/rates/dynamics/145")

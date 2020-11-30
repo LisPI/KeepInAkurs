@@ -5,11 +5,12 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.develop.room530.lis.akursnotify.database.Akurs
+import com.develop.room530.lis.akursnotify.database.Nbrbkurs
 import com.develop.room530.lis.akursnotify.database.getDatabase
 import com.develop.room530.lis.akursnotify.network.AlfaApi
+import com.develop.room530.lis.akursnotify.network.NbrbApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
 
 class MyWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -20,20 +21,29 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
 
     override suspend fun doWork(): Result {
 
-        val rates = AlfaApi.getAkursRatesOnDateImpl()
+        val akursRates = AlfaApi.getAkursRatesOnDateImpl()
+        val nbrbRate = NbrbApi.service.getUsdRate()
 
         withContext(Dispatchers.IO) {
-            getDatabase(appContext).akursDatabaseDao.insertAkurs(
-                akurs = Akurs(
-                    kurs = rates.first().price,
-                    date = Date().toString()
+            for (rate in akursRates) {
+                getDatabase(appContext).akursDatabaseDao.insertAkurs(
+                    akurs = Akurs(
+                        rate = rate.price,
+                        date = rate.date,
+                        time = rate.time,
+                    )
+                )
+            }
+            getDatabase(appContext).nbrbDatabaseDao.insertNbrbkurs(
+                Nbrbkurs(
+                    nbrbRate.price.toString(),
+                    nbrbRate.date
                 )
             )
         }
 
-        Log.d("currency", rates.first().price)
+        Log.d("nbrb currency", nbrbRate.price.toString())
 
-        // Indicate whether the work finished successfully with the Result
         return Result.success()
     }
 }

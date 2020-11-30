@@ -72,30 +72,30 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             val currencyHistory = withContext(Dispatchers.IO) {
-                // RetrofitClass.service.getUsdCurrencyHistory(start, end)
                 getDatabase(applicationContext).nbrbDatabaseDao.getNbrbkurs()
             }
 
             val rates = withContext(Dispatchers.IO) {
                 getDatabase(applicationContext).akursDatabaseDao.getAkurs()
-            }
+            }.sortedBy { it.date }
+
             val ADataset = LineDataSet(rates.mapIndexed { index, akurs ->
                 Entry(
                     index.toFloat(),
-                    akurs.kurs.replace(',','.').toFloatOrNull() ?: -1.0F)
+                    akurs.rate.replace(',','.').toFloatOrNull() ?: -1.0F)
             }, "USD по А-Курс")
 
             ADataset.color = Color.RED
             ADataset.valueTextSize = 12F
 
-            // chart.xAxis.valueFormatter = IndexAxisValueFormatter(currencyHistory.map { it.Date.substring(5, 10) })
-            val NbDataset = LineDataSet(currencyHistory.mapIndexed { index, nbrbModel ->
-                Entry(
-                    index.toFloat(),
-                    nbrbModel.kurs.toFloat()
-                )
-            }, "USD по НБ РБ")
-            val datasets = listOf<ILineDataSet>(NbDataset, ADataset)
+            // chart.xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { it.time })
+//            val NbDataset = LineDataSet(currencyHistory.mapIndexed { index, nbrbModel ->
+//                Entry(
+//                    index.toFloat(),
+//                    nbrbModel.rate.toFloat()
+//                )
+//            }, "USD по НБ")
+            val datasets = listOf<ILineDataSet>(/*NbDataset,*/ ADataset)
             chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             val data = LineData(datasets)
             data.isHighlightEnabled = false
@@ -123,10 +123,10 @@ class MainActivity : AppCompatActivity() {
                 NbrbApi.service.getUsdRate()
             }
 
-            val t2 = AlfaApi.getAkursRatesOnDateImpl("01.04.2019")
+            val akursRates = AlfaApi.getAkursRatesOnDateImpl()
 
             currencyNB.value = getString(R.string.NB) + " : " + nbrb.price
-            currency.value = t2.first().price
+            currency.value = akursRates.firstOrNull()?.price ?: "No data"
         }
     }
 

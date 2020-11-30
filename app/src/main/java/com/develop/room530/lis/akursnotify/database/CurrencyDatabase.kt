@@ -10,7 +10,9 @@ fun getDatabase(context: Context): CurrencyDatabase {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(context.applicationContext,
                 CurrencyDatabase::class.java,
-                "currency_database").build()
+                "currency_database")
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
     return INSTANCE
@@ -18,7 +20,7 @@ fun getDatabase(context: Context): CurrencyDatabase {
 
 @Database(
     entities = [Akurs::class, Nbrbkurs::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class CurrencyDatabase : RoomDatabase() {
@@ -28,17 +30,16 @@ abstract class CurrencyDatabase : RoomDatabase() {
 
 @Entity(tableName = "akurs")
 data class Akurs(
-    @PrimaryKey(autoGenerate = true)  // TODO price and time is key or only time
-    val id: Int = 0,
-    val kurs: String,
-    val date: String
+    val rate: String,
+    @PrimaryKey // TODO price and time is key or only time
+    val date: String,
+    val time: String,
 )
 
 @Entity(tableName = "nbrbkurs")
 data class Nbrbkurs(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val kurs: String,
+    val rate: String,
+    @PrimaryKey
     val date: String
 )
 
