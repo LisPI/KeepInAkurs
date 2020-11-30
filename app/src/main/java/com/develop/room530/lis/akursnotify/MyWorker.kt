@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.develop.room530.lis.akursnotify.database.Akurs
 import com.develop.room530.lis.akursnotify.database.getDatabase
+import com.develop.room530.lis.akursnotify.network.AlfaApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -19,18 +20,18 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
 
     override suspend fun doWork(): Result {
 
-        val currency = getAkursRate()
+        val rates = AlfaApi.getAkursRatesOnDateImpl()
 
         withContext(Dispatchers.IO) {
             getDatabase(appContext).akursDatabaseDao.insertAkurs(
                 akurs = Akurs(
-                    kurs = currency,
+                    kurs = rates.first().price,
                     date = Date().toString()
                 )
             )
         }
 
-        Log.d("currency", currency)
+        Log.d("currency", rates.first().price)
 
         // Indicate whether the work finished successfully with the Result
         return Result.success()

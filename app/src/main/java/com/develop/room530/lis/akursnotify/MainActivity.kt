@@ -22,8 +22,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 const val KEY_CURRENCY = "key_currency"
@@ -72,16 +70,15 @@ class MainActivity : AppCompatActivity() {
 
         val chart = findViewById<LineChart>(R.id.chart)
 
-        val start = getDateMinusFormat(getDateWithOffset(-7))
-        val end = getDateMinusFormat(getDateWithOffset(+1))
-
         CoroutineScope(Dispatchers.Main).launch {
             val currencyHistory = withContext(Dispatchers.IO) {
                 // RetrofitClass.service.getUsdCurrencyHistory(start, end)
                 getDatabase(applicationContext).nbrbDatabaseDao.getNbrbkurs()
             }
 
-            val rates = withContext(Dispatchers.IO) { getDatabase(applicationContext).akursDatabaseDao.getAkurs()}
+            val rates = withContext(Dispatchers.IO) {
+                getDatabase(applicationContext).akursDatabaseDao.getAkurs()
+            }
             val ADataset = LineDataSet(rates.mapIndexed { index, akurs ->
                 Entry(
                     index.toFloat(),
@@ -121,18 +118,15 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: make red/green triangle as in Lesson - selectors
         CoroutineScope(Dispatchers.Main).launch {
-            val akurs = getAkursRate()
 
             val nbrb = withContext(Dispatchers.IO) {
-                NbrbApi.service.getUsdCurrency()
+                NbrbApi.service.getUsdRate()
             }
 
-            val t = withContext(Dispatchers.IO) {
-                AlfaApi.service.getAkursUsdCurrency("28.11.2020")
-            }
+            val t2 = AlfaApi.getAkursRatesOnDateImpl("01.04.2019")
 
-            currencyNB.value = getString(R.string.NB) + " : " + nbrb.Cur_OfficialRate
-            currency.value = akurs
+            currencyNB.value = getString(R.string.NB) + " : " + nbrb.price
+            currency.value = t2.first().price
         }
     }
 
@@ -140,17 +134,5 @@ class MainActivity : AppCompatActivity() {
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting
-    }
-
-    fun getDateWithOffset(offset: Int, date: Date = Date()): Date {
-        val cal = Calendar.getInstance()
-        cal.time = date
-        cal.add(Calendar.DATE, offset)
-        return cal.time
-    }
-
-    fun getDateMinusFormat(date: Date): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale("ru"))
-        return sdf.format(date)
     }
 }

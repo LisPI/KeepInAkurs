@@ -1,23 +1,28 @@
 package com.develop.room530.lis.akursnotify.network
 
+import com.develop.room530.lis.akursnotify.getDateMinusFormat
+import com.develop.room530.lis.akursnotify.getDateWithOffset
+import com.google.gson.annotations.SerializedName
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 data class NbrbModel(
-    var Date: String,
-    var Cur_OfficialRate: Float
+    @SerializedName("Date") var date: String,
+    @SerializedName("Cur_OfficialRate") var price: Float
 )
 
 interface NbrbApiService{
     @GET("api/exrates/rates/145")
-    suspend fun getUsdCurrency(): NbrbModel
+    suspend fun getUsdRate(
+        @Query(value = "ondate") to : String = getDateMinusFormat(getDateWithOffset(0))   // 2020-11-30
+    ): NbrbModel
 
     @GET("api/exrates/rates/dynamics/145")
-    suspend fun getUsdCurrencyHistory(
-        @Query(value = "startdate") from : String, // 2020-11-10
-        @Query(value = "enddate") to : String,
+    suspend fun getUsdRatesHistory(
+        @Query(value = "startdate") from : String = getDateMinusFormat(getDateWithOffset(-7)), // 2020-11-30
+        @Query(value = "enddate") to : String = getDateMinusFormat(getDateWithOffset(+1)),
     ): List<NbrbModel>
 }
 

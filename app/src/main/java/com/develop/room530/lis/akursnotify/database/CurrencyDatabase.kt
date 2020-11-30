@@ -28,7 +28,7 @@ abstract class CurrencyDatabase : RoomDatabase() {
 
 @Entity(tableName = "akurs")
 data class Akurs(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)  // TODO price and time is key or only time
     val id: Int = 0,
     val kurs: String,
     val date: String

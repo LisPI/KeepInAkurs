@@ -1,20 +1,25 @@
 package com.develop.room530.lis.akursnotify.network
 
+import com.develop.room530.lis.akursnotify.getDateDotFormat
+import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
+import java.util.*
 
-data class AlfaModel(
+data class AlfaDtoModel(
     val title: String,
     val currenciesData: List<CurrencyRates>
 )
 
 data class CurrencyRates(
-    val text: String,
+    @SerializedName("text") val time: String,
     val date: String,
-    val value: Rates,
+    @SerializedName("value") val rates: Rates,
 )
 
 data class Rates(
@@ -29,23 +34,50 @@ data class Rate(
 )
 
 data class RateValue(
-    val value: String,
+    @SerializedName("value") val price: String,
     val change: String
 )
 
-interface AlfaApiService{
+interface AlfaApiService {
     @FormUrlEncoded
     @POST("exchange/digital/")
-    suspend fun getAkursUsdCurrency(
-        @Field("selectedDate") date : String = "30.11.2020"
-    ): List<AlfaModel>
+    suspend fun getAkursRatesOnDate(
+        @Field("selectedDate") date: String
+    ): List<AlfaDtoModel>
 }
 
-object AlfaApi{
-    private val retrofit : Retrofit = Retrofit.Builder()
+object AlfaApi {
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://www.alfabank.by/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     val service: AlfaApiService = retrofit.create(AlfaApiService::class.java)
+
+    suspend fun getAkursRatesOnDateImpl(date: String = getDateDotFormat(Date())): List<AlfaAkursRate> {
+        val data = withContext(Dispatchers.IO) {
+            service.getAkursRatesOnDate(date)
+        }
+        val akursData = data.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
+
+
+        val rates = akursData.map {
+            it.currenciesData.map { cur ->
+                AlfaAkursRate(
+                    cur.date,
+                    cur.time,
+                    cur.rates.exchangeRate[0].purchase.price,
+                    cur.rates.exchangeRate[0].purchase.change
+                )
+            }
+        }
+        return rates.flatten()
+    }
 }
+
+data class AlfaAkursRate(
+    val date: String,
+    val time: String,
+    val price: String,
+    val change: String
+)
