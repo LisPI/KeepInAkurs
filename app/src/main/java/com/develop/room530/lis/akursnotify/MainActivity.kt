@@ -17,6 +17,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,36 +67,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun printChart() {
-        if (checkInternet() != true) return
 
         val chart = findViewById<LineChart>(R.id.chart)
 
         CoroutineScope(Dispatchers.Main).launch {
-            val currencyHistory = withContext(Dispatchers.IO) {
+            val nbRates = withContext(Dispatchers.IO) {
                 getDatabase(applicationContext).nbrbDatabaseDao.getNbrbkurs()
-            }
+            }.sortedBy { it.date }
 
             val rates = withContext(Dispatchers.IO) {
                 getDatabase(applicationContext).akursDatabaseDao.getAkurs()
             }.sortedBy { it.date }
 
-            val ADataset = LineDataSet(rates.mapIndexed { index, akurs ->
+            val alfaDataset = LineDataSet(rates.mapIndexed { index, akurs ->
                 Entry(
-                    index.toFloat(),
-                    akurs.rate.replace(',','.').toFloatOrNull() ?: -1.0F)
+                    index.toFloat(),//akurs.date.time.toFloat(),
+                    akurs.rate.toFloatOrNull() ?: -1.0F)
             }, "USD по А-Курс")
 
-            ADataset.color = Color.RED
-            ADataset.valueTextSize = 12F
+            alfaDataset.color = Color.RED
+            alfaDataset.valueTextSize = 12F
 
-            // chart.xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { it.time })
-//            val NbDataset = LineDataSet(currencyHistory.mapIndexed { index, nbrbModel ->
+            chart.xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { it.time })
+//            val nbDataset = LineDataSet(nbRates.mapIndexed { index, nbrbModel ->
 //                Entry(
-//                    index.toFloat(),
+//                    nbrbModel.date.time.toFloat(),
 //                    nbrbModel.rate.toFloat()
 //                )
 //            }, "USD по НБ")
-            val datasets = listOf<ILineDataSet>(/*NbDataset,*/ ADataset)
+            val datasets = listOf<ILineDataSet>(/*nbDataset,*/ alfaDataset)
             chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             val data = LineData(datasets)
             data.isHighlightEnabled = false

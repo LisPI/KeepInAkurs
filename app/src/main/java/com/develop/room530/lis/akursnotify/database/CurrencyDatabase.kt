@@ -2,6 +2,7 @@ package com.develop.room530.lis.akursnotify.database
 
 import android.content.Context
 import androidx.room.*
+import java.util.*
 
 
 private lateinit var INSTANCE: CurrencyDatabase
@@ -20,19 +21,32 @@ fun getDatabase(context: Context): CurrencyDatabase {
 
 @Database(
     entities = [Akurs::class, Nbrbkurs::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class CurrencyDatabase : RoomDatabase() {
     abstract val akursDatabaseDao: AkursDao
     abstract val nbrbDatabaseDao: NbrbDao
 }
 
+class Converters {
+    @TypeConverter
+    fun fromTimestamp(value: Long): Date {
+        return Date(value)
+    }
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date): Long {
+        return date.time
+    }
+}
+
 @Entity(tableName = "akurs")
 data class Akurs(
     val rate: String,
-    @PrimaryKey // TODO price and time is key or only time
-    val date: String,
+    @PrimaryKey
+    val date: Date,
     val time: String,
 )
 
@@ -40,7 +54,7 @@ data class Akurs(
 data class Nbrbkurs(
     val rate: String,
     @PrimaryKey
-    val date: String
+    val date: Date
 )
 
 @Dao

@@ -1,6 +1,7 @@
 package com.develop.room530.lis.akursnotify.network
 
 import com.develop.room530.lis.akursnotify.getDateDotFormat
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,7 +19,7 @@ data class AlfaDtoModel(
 
 data class CurrencyRates(
     @SerializedName("text") val time: String,
-    val date: String,
+    val date: Date,
     @SerializedName("value") val rates: Rates,
 )
 
@@ -47,9 +48,12 @@ interface AlfaApiService {
 }
 
 object AlfaApi {
+    private val gson =  GsonBuilder()
+        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+        .create()
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://www.alfabank.by/")
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
     val service: AlfaApiService = retrofit.create(AlfaApiService::class.java)
@@ -59,7 +63,6 @@ object AlfaApi {
             service.getAkursRatesOnDate(date)
         }
         val akursData = data.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
-
 
         val rates = akursData.map {
             it.currenciesData.map { cur ->
@@ -76,7 +79,7 @@ object AlfaApi {
 }
 
 data class AlfaAkursRate(
-    val date: String,
+    val date: Date,
     val time: String,
     val price: String,
     val change: String

@@ -2,14 +2,16 @@ package com.develop.room530.lis.akursnotify.network
 
 import com.develop.room530.lis.akursnotify.getDateMinusFormat
 import com.develop.room530.lis.akursnotify.getDateWithOffset
+import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.*
 
 data class NbrbModel(
-    @SerializedName("Date") var date: String,
+    @SerializedName("Date") var date: Date,
     @SerializedName("Cur_OfficialRate") var price: Float
 )
 
@@ -27,9 +29,12 @@ interface NbrbApiService{
 }
 
 object NbrbApi{
+    private val gson =  GsonBuilder()
+        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        .create()
     private val retrofit : Retrofit = Retrofit.Builder()
         .baseUrl("https://www.nbrb.by/")
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
     val service: NbrbApiService = retrofit.create(NbrbApiService::class.java)

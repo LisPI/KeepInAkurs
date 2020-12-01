@@ -22,7 +22,7 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
     override suspend fun doWork(): Result {
 
         val akursRates = AlfaApi.getAkursRatesOnDateImpl()
-        val nbrbRate = NbrbApi.service.getUsdRate()
+        val nbrbRates = NbrbApi.service.getUsdRatesHistory()
 
         withContext(Dispatchers.IO) {
             for (rate in akursRates) {
@@ -34,15 +34,17 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
                     )
                 )
             }
-            getDatabase(appContext).nbrbDatabaseDao.insertNbrbkurs(
-                Nbrbkurs(
-                    nbrbRate.price.toString(),
-                    nbrbRate.date
+            for (rate in nbrbRates) {
+                getDatabase(appContext).nbrbDatabaseDao.insertNbrbkurs(
+                    Nbrbkurs(
+                        rate.price.toString(),
+                        rate.date
+                    )
                 )
-            )
+            }
         }
 
-        Log.d("nbrb currency", nbrbRate.price.toString())
+        Log.d("nbrb currency", nbrbRates[0].price.toString())
 
         return Result.success()
     }
