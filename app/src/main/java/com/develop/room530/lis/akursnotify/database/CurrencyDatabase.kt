@@ -4,14 +4,15 @@ import android.content.Context
 import androidx.room.*
 import java.util.*
 
-
 private lateinit var INSTANCE: CurrencyDatabase
 fun getDatabase(context: Context): CurrencyDatabase {
     synchronized(CurrencyDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
-            INSTANCE = Room.databaseBuilder(context.applicationContext,
+            INSTANCE = Room.databaseBuilder(
+                context.applicationContext,
                 CurrencyDatabase::class.java,
-                "currency_database")
+                "currency_database"
+            )
                 .fallbackToDestructiveMigration()
                 .build()
         }
@@ -58,7 +59,7 @@ data class Nbrbkurs(
 )
 
 @Dao
-interface AkursDao{
+interface AkursDao {
     @Query("select * from akurs")
     fun getAkurs(): List<Akurs>
 
@@ -70,7 +71,7 @@ interface AkursDao{
 }
 
 @Dao
-interface NbrbDao{
+interface NbrbDao {
     @Query("select * from nbrbkurs")
     fun getNbrbkurs(): List<Nbrbkurs> // TODO live data
 
@@ -80,5 +81,3 @@ interface NbrbDao{
     @Query("DELETE FROM nbrbkurs")
     suspend fun deleteAll()
 }
-
-// TODO viewpager2 - 2 different chart and old screen with big fontsize

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.develop.room530.lis.akursnotify.database.getDatabase
-import com.github.mikephil.charting.charts.LineChart
+import com.develop.room530.lis.akursnotify.databinding.FragmentAkursBinding
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -21,18 +21,20 @@ import kotlinx.coroutines.withContext
 
 class AkursFragment : Fragment() {
 
+    private var _binding: FragmentAkursBinding? = null
+    private val binding get() = requireNotNull(_binding)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_akurs, container, false)
+        _binding = FragmentAkursBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val chart = view.findViewById<LineChart>(R.id.chart)
 
         CoroutineScope(Dispatchers.Main).launch {
             val rates = withContext(Dispatchers.IO) {
@@ -49,18 +51,25 @@ class AkursFragment : Fragment() {
             alfaDataset.color = Color.RED
             alfaDataset.valueTextSize = 12F
 
-            chart.xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { it.time })
-
             val datasets = listOf<ILineDataSet>(alfaDataset)
-            chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
             val data = LineData(datasets)
             data.isHighlightEnabled = false
-            chart.description.text = ""
-            chart.data = data
-            chart.axisRight.isEnabled = false
-            chart.legend.textSize = 14F
-            chart.setNoDataText("")
-            chart.invalidate()
+
+            with(binding.chart) {
+                xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { it.time })
+                xAxis.position = XAxis.XAxisPosition.BOTTOM
+                description.text = ""
+                this.data = data
+                axisRight.isEnabled = false
+                legend.textSize = 14F
+                setNoDataText("")
+                invalidate()
+            }
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

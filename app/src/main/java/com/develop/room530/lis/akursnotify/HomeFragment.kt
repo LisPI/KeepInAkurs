@@ -7,36 +7,50 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
 import com.develop.room530.lis.akursnotify.network.AlfaApi
 import com.develop.room530.lis.akursnotify.network.NbrbApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+const val KEY_CURRENCY = "key_currency"
+const val KEY_CURRENCYNB = "key_currencyNB"
+
 class HomeFragment : Fragment() {
 
     private var currency = MutableLiveData<String>()
     private var currencyNB = MutableLiveData<String>()
 
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = requireNotNull(_binding)
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         currency.observe(
-            this,
-            { newValue -> view.findViewById<TextView>(R.id.tv_currency).text = newValue })
+            viewLifecycleOwner,
+            { newValue -> binding.tvCurrency.text = newValue })
         currencyNB.observe(
-            this,
-            { newValue -> view.findViewById<TextView>(R.id.tv_currencyNB).text = newValue })
+            viewLifecycleOwner,
+            { newValue -> binding.tvCurrencyNB.text = newValue })
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            binding.tvCurrency.text = getString(R.string.updateMessage)
+            binding.tvCurrencyNB.text = ""
+            binding.swipeToRefresh.isRefreshing = false
+            getCurrency()
+        }
 
         if (savedInstanceState != null) {
             currency.value = savedInstanceState.getString(KEY_CURRENCY)
@@ -66,5 +80,16 @@ class HomeFragment : Fragment() {
         val cm = this@HomeFragment.requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_CURRENCY, currency.value)
+        outState.putString(KEY_CURRENCYNB, currencyNB.value)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
