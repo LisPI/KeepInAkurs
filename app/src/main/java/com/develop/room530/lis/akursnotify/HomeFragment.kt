@@ -58,6 +58,7 @@ class HomeFragment : Fragment() {
         } else getCurrency()
     }
 
+    // TODO update also db here
     private fun getCurrency() {
         if (checkInternet() != true) {
             currency.value = "Check your Internet connection"
