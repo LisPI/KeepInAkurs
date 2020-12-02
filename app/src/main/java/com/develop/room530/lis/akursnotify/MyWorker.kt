@@ -22,7 +22,7 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
     override suspend fun doWork(): Result {
 
         val akursRates = AlfaApi.getAkursRatesOnDateImpl()
-        val nbrbRates = NbrbApi.service.getUsdRatesHistory()
+        val nbrbRates = NbrbApi.getUsdRateHistoryImpl()
 
         withContext(Dispatchers.IO) {
             for (rate in akursRates) {

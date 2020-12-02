@@ -119,13 +119,10 @@ class MainActivity : AppCompatActivity() {
         // TODO: make red/green triangle as in Lesson - selectors
         CoroutineScope(Dispatchers.Main).launch {
 
-            val nbrb = withContext(Dispatchers.IO) {
-                NbrbApi.service.getUsdRate()
-            }
-
+            val nbrb = NbrbApi.getUsdRateImpl()
             val akursRates = AlfaApi.getAkursRatesOnDateImpl()
 
-            currencyNB.value = getString(R.string.NB) + " : " + nbrb.price
+            currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
             currency.value = akursRates.firstOrNull()?.price ?: "No data"
         }
     }

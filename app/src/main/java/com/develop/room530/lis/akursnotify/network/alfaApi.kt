@@ -1,5 +1,6 @@
 package com.develop.room530.lis.akursnotify.network
 
+import android.util.Log
 import com.develop.room530.lis.akursnotify.getDateDotFormat
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
@@ -48,7 +49,7 @@ interface AlfaApiService {
 }
 
 object AlfaApi {
-    private val gson =  GsonBuilder()
+    private val gson = GsonBuilder()
         .setDateFormat("yyyy-MM-dd HH:mm:ss")
         .create()
     private val retrofit: Retrofit = Retrofit.Builder()
@@ -56,25 +57,30 @@ object AlfaApi {
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
-    val service: AlfaApiService = retrofit.create(AlfaApiService::class.java)
+    private val service: AlfaApiService = retrofit.create(AlfaApiService::class.java)
 
     suspend fun getAkursRatesOnDateImpl(date: String = getDateDotFormat(Date())): List<AlfaAkursRate> {
-        val data = withContext(Dispatchers.IO) {
-            service.getAkursRatesOnDate(date)
-        }
-        val akursData = data.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
-
-        val rates = akursData.map {
-            it.currenciesData.map { cur ->
-                AlfaAkursRate(
-                    cur.date,
-                    cur.time,
-                    cur.rates.exchangeRate[0].purchase.price,
-                    cur.rates.exchangeRate[0].purchase.change
-                )
+        try {
+            val data = withContext(Dispatchers.IO) {
+                service.getAkursRatesOnDate(date)
             }
+            val akursData = data.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
+
+            val rates = akursData.map {
+                it.currenciesData.map { cur ->
+                    AlfaAkursRate(
+                        cur.date,
+                        cur.time,
+                        cur.rates.exchangeRate[0].purchase.price,
+                        cur.rates.exchangeRate[0].purchase.change
+                    )
+                }
+            }
+            return rates.flatten()
+        } catch (e: Exception) {
+            Log.d("error", e.toString())
+            return listOf()
         }
-        return rates.flatten()
     }
 }
 
