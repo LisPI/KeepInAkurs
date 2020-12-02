@@ -1,6 +1,7 @@
 package com.develop.room530.lis.akursnotify.database
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import java.util.*
 
@@ -42,7 +43,7 @@ class Converters {
         return date.time
     }
 }
-
+// TODO save date of change data)
 @Entity(tableName = "akurs")
 data class Akurs(
     val rate: String,
@@ -61,9 +62,9 @@ data class Nbrbkurs(
 @Dao
 interface AkursDao {
     @Query("select * from akurs")
-    fun getAkurs(): List<Akurs>
+    fun getAkurs(): LiveData<List<Akurs>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAkurs(akurs: Akurs)
 
     @Query("DELETE FROM akurs")
@@ -73,9 +74,9 @@ interface AkursDao {
 @Dao
 interface NbrbDao {
     @Query("select * from nbrbkurs")
-    fun getNbrbkurs(): List<Nbrbkurs> // TODO live data
+    fun getNbrbkurs(): LiveData<List<Nbrbkurs>> // TODO live data
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNbrbkurs(vararg nbrbkurs: Nbrbkurs)
 
     @Query("DELETE FROM nbrbkurs")

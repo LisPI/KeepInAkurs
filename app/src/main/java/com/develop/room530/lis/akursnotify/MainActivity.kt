@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity() {
     private inner class MyPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = 3
 
-        // TODO send data from db in bundle ?
+        // TODO send data from db in bundle ? NO - load from db onstart app ! VM ?
+        // TODO add feature get rates by date!!!!
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> AkursFragment()
@@ -34,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         val pagerAdapter = MyPagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
-        val tab = findViewById<TabLayout>(R.id.tab)
-        TabLayoutMediator(tab, viewPager) { tab, position ->
+        val tabLayout = findViewById<TabLayout>(R.id.tab)
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Альфа"
                 1 -> "Сводка"

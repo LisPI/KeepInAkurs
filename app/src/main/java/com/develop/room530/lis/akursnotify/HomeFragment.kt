@@ -9,12 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import com.develop.room530.lis.akursnotify.database.Akurs
+import com.develop.room530.lis.akursnotify.database.Nbrbkurs
+import com.develop.room530.lis.akursnotify.database.getDatabase
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
+import com.develop.room530.lis.akursnotify.network.AlfaAkursRate
 import com.develop.room530.lis.akursnotify.network.AlfaApi
 import com.develop.room530.lis.akursnotify.network.NbrbApi
+import com.develop.room530.lis.akursnotify.network.NbrbModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val KEY_CURRENCY = "key_currency"
 const val KEY_CURRENCYNB = "key_currencyNB"
@@ -58,7 +64,6 @@ class HomeFragment : Fragment() {
         } else getCurrency()
     }
 
-    // TODO update also db here
     private fun getCurrency() {
         if (checkInternet() != true) {
             currency.value = "Check your Internet connection"
@@ -69,16 +74,19 @@ class HomeFragment : Fragment() {
         // TODO: make red/green triangle as in Lesson - selectors
         CoroutineScope(Dispatchers.Main).launch {
 
-            val nbrb = NbrbApi.getUsdRateImpl()
-            val akursRates = AlfaApi.getAkursRatesOnDateImpl()
+            val nbrb = NbrbApi.getUsdRateImpl() //"2020-11-23"
+            val akursRates = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
             currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
             currency.value = akursRates.firstOrNull()?.price ?: "No data"
+
+            saveRatesInDb(akursRates, nbrb)
         }
     }
 
     private fun checkInternet(): Boolean? {
-        val cm = this@HomeFragment.requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = this@HomeFragment.requireActivity()
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting
     }
@@ -92,5 +100,27 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    suspend fun saveRatesInDb(akursRates: List<AlfaAkursRate>, nbrb: NbrbModel?){
+        withContext(Dispatchers.IO) {
+            for (rate in akursRates) {
+                getDatabase(requireContext()).akursDatabaseDao.insertAkurs(
+                    akurs = Akurs(
+                        rate = rate.price,
+                        date = rate.date,
+                        time = rate.time,
+                    )
+                )
+            }
+            nbrb?.let {
+                getDatabase(requireContext()).nbrbDatabaseDao.insertNbrbkurs(
+                    Nbrbkurs(
+                        it.price.toString(),
+                        it.date
+                    )
+                )
+            }
+        }
     }
 }
