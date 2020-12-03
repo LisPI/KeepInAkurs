@@ -56,7 +56,11 @@ class NbrbFragment : Fragment() {
         data.isHighlightEnabled = false
 
         with(binding.chart) {
-            xAxis.valueFormatter = IndexAxisValueFormatter(nbRates.map { it.date.date.toString() })
+
+            setDrawBorders(true)
+            xAxis.isGranularityEnabled = true
+
+            xAxis.valueFormatter = IndexAxisValueFormatter(nbRates.map { getDateDDMMFormat(it.date) })
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             description.text = ""
             this.data = data

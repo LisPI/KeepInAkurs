@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private inner class MyPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = 3
 
+        // TODO add install code - load akurs! (weekend problems now) - onboarding screen in this time:)
         // TODO add feature get rates by date!!!!
         override fun createFragment(position: Int): Fragment {
             return when (position) {

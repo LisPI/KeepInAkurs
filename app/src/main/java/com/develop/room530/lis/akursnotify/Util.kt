@@ -19,3 +19,13 @@ fun getDateDotFormat(date: Date): String {
     val sdf = SimpleDateFormat("dd.MM.yyyy", Locale("ru"))
     return sdf.format(date)
 }
+
+fun getDateDDMMFormat(date: Date): String {
+    val sdf = SimpleDateFormat("dd.MM", Locale("ru"))
+    return sdf.format(date)
+}
+
+fun getDateHHMMDDMMFormat(date: Date): String {
+    val sdf = SimpleDateFormat("HH:mm dd.MM", Locale("ru"))
+    return sdf.format(date)
+}

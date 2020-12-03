@@ -56,7 +56,12 @@ class AkursFragment : Fragment() {
         data.isHighlightEnabled = false
 
         with(binding.chart) {
-            xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { it.time })
+
+            setDrawBorders(true)
+            xAxis.isGranularityEnabled = true
+            xAxis.labelRotationAngle = 315f
+
+            xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { getDateHHMMDDMMFormat(it.date) })
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             description.text = ""
             this.data = data
