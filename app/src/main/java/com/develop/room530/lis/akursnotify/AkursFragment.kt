@@ -39,6 +39,7 @@ class AkursFragment : Fragment() {
         super.onDestroyView()
     }
 
+    // TODO one method for 2 charts
     fun printChart(rates: List<Akurs>) {
         val alfaDataset = LineDataSet(rates.mapIndexed { index, akurs ->
             Entry(

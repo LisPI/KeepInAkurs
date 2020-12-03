@@ -31,41 +31,8 @@ class NbrbFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getDatabase(requireContext()).nbrbDatabaseDao.getNbrbkurs().observe(viewLifecycleOwner) {printChart(it)}
-/*
-        CoroutineScope(Dispatchers.Main).launch {
-            val nbRates = withContext(Dispatchers.IO) {
-                getDatabase(this@NbrbFragment.requireContext()).nbrbDatabaseDao.getNbrbkurs()
-            }.sortedBy { it.date }
-
-            val nbDataset = LineDataSet(nbRates.mapIndexed { index, nbrbModel ->
-                Entry(
-                    index.toFloat(),
-                    nbrbModel.rate.toFloat()
-                )
-            }, "USD по НБ")
-
-            nbDataset.color = Color.GREEN
-            nbDataset.valueTextSize = 12F
-
-            val datasets = listOf<ILineDataSet>(nbDataset)
-            val data = LineData(datasets)
-            data.isHighlightEnabled = false
-
-            with(binding.chart) {
-                xAxis.valueFormatter = IndexAxisValueFormatter(nbRates.map { it.date.date.toString() })
-                xAxis.position = XAxis.XAxisPosition.BOTTOM
-                description.text = ""
-                this.data = data
-                axisRight.isEnabled = false
-                legend.textSize = 14F
-                setNoDataText("")
-                // TODO do it!
-                setExtraOffsets(10F,10F, 20F,10F)
-
-                invalidate()
-            }
-        }*/
+        getDatabase(requireContext()).nbrbDatabaseDao.getNbrbkurs()
+            .observe(viewLifecycleOwner) { printChart(it) }
     }
 
     override fun onDestroyView() {
@@ -97,7 +64,7 @@ class NbrbFragment : Fragment() {
             legend.textSize = 14F
             setNoDataText("")
             // TODO do it!
-            setExtraOffsets(10F,10F, 20F,10F)
+            setExtraOffsets(10F, 10F, 20F, 10F)
 
             invalidate()
         }

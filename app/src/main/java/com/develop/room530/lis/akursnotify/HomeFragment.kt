@@ -46,10 +46,14 @@ class HomeFragment : Fragment() {
 
         currency.observe(
             viewLifecycleOwner,
-            { newValue -> binding.tvCurrency.text = newValue })
+            { newValue ->
+                binding.tvCurrency.text = newValue
+            })
         currencyNB.observe(
             viewLifecycleOwner,
-            { newValue -> binding.tvCurrencyNB.text = newValue })
+            { newValue ->
+                binding.tvCurrencyNB.text = newValue
+            })
 
         binding.swipeToRefresh.setOnRefreshListener {
             binding.tvCurrency.text = getString(R.string.updateMessage)
@@ -77,10 +81,12 @@ class HomeFragment : Fragment() {
             val nbrb = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRates = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
-            currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
-            currency.value = akursRates.firstOrNull()?.price ?: "No data"
-
             saveRatesInDb(akursRates, nbrb)
+
+            val akursRate = withContext(Dispatchers.IO){getDatabase(requireContext()).akursDatabaseDao.getLastAkurs()}
+
+            currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
+            currency.value = akursRate?.rate ?: "No data"
         }
     }
 
@@ -102,7 +108,7 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
     }
 
-    suspend fun saveRatesInDb(akursRates: List<AlfaAkursRate>, nbrb: NbrbModel?){
+    suspend fun saveRatesInDb(akursRates: List<AlfaAkursRate>, nbrb: NbrbModel?) {
         withContext(Dispatchers.IO) {
             for (rate in akursRates) {
                 getDatabase(requireContext()).akursDatabaseDao.insertAkurs(

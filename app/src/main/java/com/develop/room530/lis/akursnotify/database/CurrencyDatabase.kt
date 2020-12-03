@@ -64,6 +64,9 @@ interface AkursDao {
     @Query("select * from akurs")
     fun getAkurs(): LiveData<List<Akurs>>
 
+    @Query("select * from akurs order by date desc limit 1")
+    fun getLastAkurs(): Akurs?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAkurs(akurs: Akurs)
 
@@ -74,7 +77,7 @@ interface AkursDao {
 @Dao
 interface NbrbDao {
     @Query("select * from nbrbkurs")
-    fun getNbrbkurs(): LiveData<List<Nbrbkurs>> // TODO live data
+    fun getNbrbkurs(): LiveData<List<Nbrbkurs>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNbrbkurs(vararg nbrbkurs: Nbrbkurs)
