@@ -1,5 +1,7 @@
 package com.develop.room530.lis.akursnotify
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        showOnboardingIfNeeded()
+
         viewPager = findViewById(R.id.pager)
         val pagerAdapter = MyPagerAdapter(this)
         viewPager.adapter = pagerAdapter
@@ -44,5 +48,14 @@ class MainActivity : AppCompatActivity() {
                 else -> "НБ РБ"
             }
         }.attach()
+    }
+
+    private fun showOnboardingIfNeeded() {
+        val sp = this.getSharedPreferences(this.getString(R.string.app_pref), Context.MODE_PRIVATE)
+        if(!sp.getBoolean(this.getString(R.string.onboarding_complete), false)){
+            val onboardingIntent = Intent(this, OnboardingActivity::class.java)
+            startActivity(onboardingIntent)
+            finish()
+        }
     }
 }

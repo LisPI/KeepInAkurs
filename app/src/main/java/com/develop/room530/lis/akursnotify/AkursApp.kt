@@ -29,13 +29,13 @@ class AkursApp: Application() {
             .build()
 
         val repeatingRequest
-                = PeriodicWorkRequestBuilder<MyWorker>(15, TimeUnit.MINUTES)
+                = PeriodicWorkRequestBuilder<MyWorker>(1, TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             MyWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.REPLACE,  // FIXME for debug purposes
             repeatingRequest)
     }
 

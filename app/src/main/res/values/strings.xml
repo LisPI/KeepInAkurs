@@ -3,4 +3,8 @@
     <string name="initMessage">Waiting</string>\
     <string name="updateMessage">Updating</string>
     <string name="NB">Нацбанк</string>
+    <string name="app_pref">APP_PREF</string>
+    <string name="onboarding_complete">OnboardingComplete</string>
+    <string name="done_message">Хорошо!</string>
+    <string name="onboarding_message">Графики на левой и правой страничках интерактивны, значения обновляются в фоне 1 раз в час. Либо это показать как диалоги)</string>
 </resources>

@@ -9,14 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import com.develop.room530.lis.akursnotify.database.Akurs
-import com.develop.room530.lis.akursnotify.database.Nbrbkurs
 import com.develop.room530.lis.akursnotify.database.getDatabase
+import com.develop.room530.lis.akursnotify.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
-import com.develop.room530.lis.akursnotify.network.AlfaAkursRate
 import com.develop.room530.lis.akursnotify.network.AlfaApi
 import com.develop.room530.lis.akursnotify.network.NbrbApi
-import com.develop.room530.lis.akursnotify.network.NbrbModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +40,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.button.setOnClickListener {
+            val sp = requireContext().getSharedPreferences(this.getString(R.string.app_pref), Context.MODE_PRIVATE)
+            sp.edit().apply {
+                putBoolean(requireContext().getString(R.string.onboarding_complete), false)
+                apply()
+            }
+        }
 
         currency.observe(
             viewLifecycleOwner,
@@ -81,7 +86,7 @@ class HomeFragment : Fragment() {
             val nbrb = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRates = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
-            saveRatesInDb(akursRates, nbrb)
+            saveRatesInDb(requireContext(), akursRates, nbrb)
 
             val akursRate = withContext(Dispatchers.IO){getDatabase(requireContext()).akursDatabaseDao.getLastAkurs()}
 
@@ -106,27 +111,5 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    suspend fun saveRatesInDb(akursRates: List<AlfaAkursRate>, nbrb: NbrbModel?) {
-        withContext(Dispatchers.IO) {
-            for (rate in akursRates) {
-                getDatabase(requireContext()).akursDatabaseDao.insertAkurs(
-                    akurs = Akurs(
-                        rate = rate.price,
-                        date = rate.date,
-                        time = rate.time,
-                    )
-                )
-            }
-            nbrb?.let {
-                getDatabase(requireContext()).nbrbDatabaseDao.insertNbrbkurs(
-                    Nbrbkurs(
-                        it.price.toString(),
-                        it.date
-                    )
-                )
-            }
-        }
     }
 }

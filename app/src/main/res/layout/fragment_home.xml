@@ -39,6 +39,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_currency"
                     tools:text="this is nbrb" />
+
+            <Button
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Clear"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_currencyNB"
+                    app:layout_constraintStart_toStartOf="@+id/tv_currencyNB"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_currencyNB" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
