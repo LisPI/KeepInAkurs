@@ -4,30 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
+
+    // TODO add install code - load akurs! (weekend problems now) - onboarding screen in this time:)
+    // TODO add feature get rates by date!!!!
+    // TODO view setting - 3 days, weak, month - without title
     private lateinit var viewPager: ViewPager2
-
-    private inner class MyPagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 3
-
-        // TODO add install code - load akurs! (weekend problems now) - onboarding screen in this time:)
-        // TODO add feature get rates by date!!!!
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> AkursFragment()
-                1 -> HomeFragment()
-                else -> NbrbFragment()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,24 +24,49 @@ class MainActivity : AppCompatActivity() {
 
         showOnboardingIfNeeded()
 
-        viewPager = findViewById(R.id.pager)
-        val pagerAdapter = MyPagerAdapter(this)
-        viewPager.adapter = pagerAdapter
-        viewPager.setCurrentItem(1, false)
-
-        val tabLayout = findViewById<TabLayout>(R.id.tab)
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Альфа"
-                1 -> "Сводка"
-                else -> "НБ РБ"
+        if (savedInstanceState == null) {
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                add<HomeFragment>(R.id.fragment_container_view)
             }
-        }.attach()
+            findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId =
+                R.id.HomeFragment
+        }
+
+        findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.ChartsFragment -> {
+                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is AkursFragment)
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+                            replace<AkursFragment>(R.id.fragment_container_view)
+                        }
+                    true
+                }
+                R.id.SettingsFragment -> {
+                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is SettingsFragment)
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+                            replace<SettingsFragment>(R.id.fragment_container_view)
+                        }
+                    true
+                }
+                R.id.HomeFragment -> {
+                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is HomeFragment)
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true)
+                            replace<HomeFragment>(R.id.fragment_container_view)
+                        }
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun showOnboardingIfNeeded() {
         val sp = this.getSharedPreferences(this.getString(R.string.app_pref), Context.MODE_PRIVATE)
-        if(!sp.getBoolean(this.getString(R.string.onboarding_complete), false)){
+        if (!sp.getBoolean(this.getString(R.string.onboarding_complete), false)) {
             val onboardingIntent = Intent(this, OnboardingActivity::class.java)
             startActivity(onboardingIntent)
             finish()

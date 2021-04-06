@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,7 @@ import com.develop.room530.lis.akursnotify.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
 import com.develop.room530.lis.akursnotify.network.AlfaApi
 import com.develop.room530.lis.akursnotify.network.NbrbApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 const val KEY_CURRENCY = "key_currency"
 const val KEY_CURRENCYNB = "key_currencyNB"
@@ -42,7 +40,10 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.button.setOnClickListener {
-            val sp = requireContext().getSharedPreferences(this.getString(R.string.app_pref), Context.MODE_PRIVATE)
+            val sp = requireContext().getSharedPreferences(
+                this.getString(R.string.app_pref),
+                Context.MODE_PRIVATE
+            )
             sp.edit().apply {
                 putBoolean(requireContext().getString(R.string.onboarding_complete), false)
                 apply()
@@ -73,6 +74,9 @@ class HomeFragment : Fragment() {
         } else getCurrency()
     }
 
+    private var job = Job()
+    private val coroutineScope = CoroutineScope(job + Dispatchers.Main )
+
     private fun getCurrency() {
         if (checkInternet() != true) {
             currency.value = "Check your Internet connection"
@@ -81,14 +85,14 @@ class HomeFragment : Fragment() {
         }
 
         // TODO: make red/green triangle as in Lesson - selectors
-        CoroutineScope(Dispatchers.Main).launch {
-
+        coroutineScope.launch {
             val nbrb = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRates = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
             saveRatesInDb(requireContext(), akursRates, nbrb)
 
-            val akursRate = withContext(Dispatchers.IO){getDatabase(requireContext()).akursDatabaseDao.getLastAkurs()}
+            val akursRate =
+                withContext(Dispatchers.IO) { getDatabase(requireContext()).akursDatabaseDao.getLastAkurs() }
 
             currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
             currency.value = akursRate?.rate ?: "No data"
@@ -110,6 +114,8 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
+        job.complete()
+        Log.d("1","destroy")
         super.onDestroyView()
     }
 }

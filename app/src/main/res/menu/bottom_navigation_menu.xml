@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/ChartsFragment"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_bar_chart_24"
+            android:title="Графики"/>
+    <item
+            android:id="@+id/HomeFragment"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_home_24"
+            android:title="Инфо"/>
+    <item
+            android:id="@+id/SettingsFragment"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="Настройки"/>
+</menu>

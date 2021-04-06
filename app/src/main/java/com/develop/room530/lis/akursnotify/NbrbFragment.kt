@@ -55,7 +55,7 @@ class NbrbFragment : Fragment() {
         val data = LineData(datasets)
         data.isHighlightEnabled = false
 
-        with(binding.chart) {
+         with(binding.chart){
 
             setDrawBorders(true)
             xAxis.isGranularityEnabled = true
@@ -69,6 +69,8 @@ class NbrbFragment : Fragment() {
             setNoDataText("")
             // TODO do it!
             setExtraOffsets(10F, 10F, 20F, 10F)
+
+            binding.chart.setMaxVisibleValueCount(30)
 
             invalidate()
         }

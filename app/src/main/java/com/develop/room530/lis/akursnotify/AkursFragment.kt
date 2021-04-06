@@ -31,7 +31,8 @@ class AkursFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getDatabase(requireContext()).akursDatabaseDao.getAkurs().observe(viewLifecycleOwner) {printChart(it)}
+        getDatabase(requireContext()).akursDatabaseDao.getAkurs()
+            .observe(viewLifecycleOwner) { printChart(it) }
     }
 
     override fun onDestroyView() {
@@ -61,7 +62,8 @@ class AkursFragment : Fragment() {
             xAxis.isGranularityEnabled = true
             xAxis.labelRotationAngle = 315f
 
-            xAxis.valueFormatter = IndexAxisValueFormatter(rates.map { getDateHHMMDDMMFormat(it.date) })
+            xAxis.valueFormatter =
+                IndexAxisValueFormatter(rates.map { getDateHHMMDDMMFormat(it.date) })
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             description.text = ""
             this.data = data
