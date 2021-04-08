@@ -29,3 +29,8 @@ fun getDateHHMMDDMMFormat(date: Date): String {
     val sdf = SimpleDateFormat("HH:mm dd.MM", Locale("ru"))
     return sdf.format(date)
 }
+
+fun getDateDDMMFormatFromLong(millis: Long): String {
+    val sdf = SimpleDateFormat("HH:mm dd.MM", Locale("ru"))
+    return sdf.format(Date(millis))
+}

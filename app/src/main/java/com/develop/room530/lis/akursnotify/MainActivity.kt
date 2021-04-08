@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     // TODO add install code - load akurs! (weekend problems now) - onboarding screen in this time:)
     // TODO add feature get rates by date!!!!
     // TODO view setting - 3 days, weak, month - without title
-    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.commit {
                             setReorderingAllowed(true)
                             replace<AkursFragment>(R.id.fragment_container_view)
+                            addToBackStack(null)
                         }
                     true
                 }
@@ -48,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.commit {
                             setReorderingAllowed(true)
                             replace<SettingsFragment>(R.id.fragment_container_view)
+                            addToBackStack(null)
                         }
                     true
                 }
@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.commit {
                             setReorderingAllowed(true)
                             replace<HomeFragment>(R.id.fragment_container_view)
+                            addToBackStack(null)
                         }
                     true
                 }

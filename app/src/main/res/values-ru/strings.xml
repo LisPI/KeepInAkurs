@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">Keep in A-Kurs</string>
-    <string name="initMessage">Waiting</string>
-    <string name="updateMessage">Updating</string>
+    <string name="app_name">Держу в А-Курсе</string>
+    <string name="initMessage">Ожидайте</string>
+    <string name="updateMessage">Обновляем</string>
     <string name="NB">Нацбанк</string>
     <string name="app_pref">APP_PREF</string>
     <string name="onboarding_complete">OnboardingComplete</string>
-    <string name="done_message">OK!</string>
+    <string name="done_message">Хорошо!</string>
     <string name="onboarding_message">Графики на левой и правой страничках интерактивны, значения обновляются в фоне 1 раз в час. Либо это показать как диалоги)</string>
-    <string name="info_nav_label">Info</string>
-    <string name="charts_nav_label">Charts</string>
-    <string name="settings_nav_label">Settings</string>
+    <string name="info_nav_label">Инфо</string>
+    <string name="charts_nav_label">Графики</string>
+    <string name="settings_nav_label">Настройки</string>
 </resources>

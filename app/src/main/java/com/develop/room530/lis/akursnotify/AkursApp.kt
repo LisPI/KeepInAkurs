@@ -11,6 +11,11 @@ class AkursApp: Application() {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
+    override fun onCreate() {
+        super.onCreate()
+        delayedInit()
+    }
+
     private fun delayedInit() {
         applicationScope.launch {
             setupRecurringWork()
@@ -37,10 +42,5 @@ class AkursApp: Application() {
             MyWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.REPLACE,  // FIXME for debug purposes
             repeatingRequest)
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        delayedInit()
     }
 }

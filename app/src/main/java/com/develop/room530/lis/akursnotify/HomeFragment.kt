@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,9 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
+
+    private var job = Job()
+    private val coroutineScope = CoroutineScope(job + Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,9 +76,6 @@ class HomeFragment : Fragment() {
         } else getCurrency()
     }
 
-    private var job = Job()
-    private val coroutineScope = CoroutineScope(job + Dispatchers.Main )
-
     private fun getCurrency() {
         if (checkInternet() != true) {
             currency.value = "Check your Internet connection"
@@ -88,12 +87,11 @@ class HomeFragment : Fragment() {
         coroutineScope.launch {
             val nbrb = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRates = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
-
-            saveRatesInDb(requireContext(), akursRates, nbrb)
-
-            val akursRate =
-                withContext(Dispatchers.IO) { getDatabase(requireContext()).akursDatabaseDao.getLastAkurs() }
-
+            if (isActive)
+                saveRatesInDb(requireContext(), akursRates, nbrb)
+            val akursRate = withContext(Dispatchers.IO) {
+                getDatabase(requireContext()).akursDatabaseDao.getLastAkurs()
+            }
             currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
             currency.value = akursRate?.rate ?: "No data"
         }
@@ -114,8 +112,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
-        job.complete()
-        Log.d("1","destroy")
+        job.cancel()
         super.onDestroyView()
     }
 }
