@@ -44,6 +44,17 @@ class AkursFragment : Fragment() {
                 binding.chart.printChart(listOf(a, b))
             }
         })
+
+        binding.chipsGroup.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                binding.chip1.id -> {
+                    binding.chart.setTouchEnabled(false)
+                }
+                binding.chip2.id -> {
+                    binding.chart.setTouchEnabled(true)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
