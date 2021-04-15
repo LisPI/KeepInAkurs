@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.ChartsFragment -> {
-                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is AkursFragment)
+                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is ChartFragment)
                         supportFragmentManager.commit {
                             setReorderingAllowed(true)
-                            replace<AkursFragment>(R.id.fragment_container_view)
+                            replace<ChartFragment>(R.id.fragment_container_view)
                             addToBackStack(null)
                         }
                     true

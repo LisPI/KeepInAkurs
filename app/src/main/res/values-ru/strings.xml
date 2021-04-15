@@ -10,4 +10,9 @@
     <string name="info_nav_label">Инфо</string>
     <string name="charts_nav_label">Графики</string>
     <string name="settings_nav_label">Настройки</string>
+    <string name="chip_label_one">3 дня</string>
+    <string name="chip_label_two">10 дней</string>
+    <string name="chip_label_three">1 месяц</string>
+    <string name="chip_label_four">свободный выбор</string>
+    <string name="no_data_label">No data</string>
 </resources>

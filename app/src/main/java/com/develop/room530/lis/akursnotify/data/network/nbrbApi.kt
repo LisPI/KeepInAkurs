@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify.network
+package com.develop.room530.lis.akursnotify.data.network
 
 import android.util.Log
 import com.develop.room530.lis.akursnotify.getDateMinusFormat

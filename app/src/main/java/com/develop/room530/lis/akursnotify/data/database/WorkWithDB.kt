@@ -1,8 +1,8 @@
-package com.develop.room530.lis.akursnotify.database
+package com.develop.room530.lis.akursnotify.data.database
 
 import android.content.Context
-import com.develop.room530.lis.akursnotify.network.AlfaAkursRate
-import com.develop.room530.lis.akursnotify.network.NbrbModel
+import com.develop.room530.lis.akursnotify.data.network.AlfaAkursRate
+import com.develop.room530.lis.akursnotify.data.network.NbrbModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.develop.room530.lis.akursnotify.databinding.FragmentAkursBinding
+import com.develop.room530.lis.akursnotify.databinding.FragmentChartBinding
 import com.develop.room530.lis.akursnotify.model.AlfaRateModel
 import com.develop.room530.lis.akursnotify.model.NbRbRateModel
 import com.develop.room530.lis.akursnotify.model.RateModel
@@ -19,9 +19,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
-class AkursFragment : Fragment() {
+class ChartFragment : Fragment() { // TODO use constructor with layout parameter
 
-    private var _binding: FragmentAkursBinding? = null
+    private var _binding: FragmentChartBinding? = null
     private val binding get() = requireNotNull(_binding)
 
     private val viewModel by viewModels<ChartViewModel>()
@@ -30,7 +30,7 @@ class AkursFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAkursBinding.inflate(inflater, container, false)
+        _binding = FragmentChartBinding.inflate(inflater, container, false)
         return binding.root
     }
 

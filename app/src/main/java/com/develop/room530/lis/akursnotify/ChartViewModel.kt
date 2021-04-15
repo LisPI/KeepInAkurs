@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
-import com.develop.room530.lis.akursnotify.database.getDatabase
+import com.develop.room530.lis.akursnotify.data.database.getDatabase
 import com.develop.room530.lis.akursnotify.model.mapFromDb
 
 class ChartViewModel(application: Application) : AndroidViewModel(application) {

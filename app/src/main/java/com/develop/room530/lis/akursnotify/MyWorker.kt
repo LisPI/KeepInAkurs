@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.develop.room530.lis.akursnotify.database.Akurs
-import com.develop.room530.lis.akursnotify.database.Nbrbkurs
-import com.develop.room530.lis.akursnotify.database.getDatabase
-import com.develop.room530.lis.akursnotify.network.AlfaApi
-import com.develop.room530.lis.akursnotify.network.NbrbApi
+import com.develop.room530.lis.akursnotify.data.database.Akurs
+import com.develop.room530.lis.akursnotify.data.database.Nbrbkurs
+import com.develop.room530.lis.akursnotify.data.database.getDatabase
+import com.develop.room530.lis.akursnotify.data.network.AlfaApi
+import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

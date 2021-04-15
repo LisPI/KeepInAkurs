@@ -1,7 +1,7 @@
 package com.develop.room530.lis.akursnotify.model
 
-import com.develop.room530.lis.akursnotify.database.Akurs
-import com.develop.room530.lis.akursnotify.database.Nbrbkurs
+import com.develop.room530.lis.akursnotify.data.database.Akurs
+import com.develop.room530.lis.akursnotify.data.database.Nbrbkurs
 import com.develop.room530.lis.akursnotify.getDateDDMMFormat
 import com.develop.room530.lis.akursnotify.getDateHHMMDDMMFormat
 import java.util.*

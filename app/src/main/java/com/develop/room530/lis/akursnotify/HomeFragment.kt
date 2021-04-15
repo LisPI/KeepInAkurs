@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import com.develop.room530.lis.akursnotify.database.getDatabase
-import com.develop.room530.lis.akursnotify.database.saveRatesInDb
+import com.develop.room530.lis.akursnotify.data.database.getDatabase
+import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
-import com.develop.room530.lis.akursnotify.network.AlfaApi
-import com.develop.room530.lis.akursnotify.network.NbrbApi
+import com.develop.room530.lis.akursnotify.data.network.AlfaApi
+import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import kotlinx.coroutines.*
 
 const val KEY_CURRENCY = "key_currency"
@@ -87,13 +87,14 @@ class HomeFragment : Fragment() {
         coroutineScope.launch {
             val nbrb = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRates = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
+
             if (isActive)
                 saveRatesInDb(requireContext(), akursRates, nbrb)
             val akursRate = withContext(Dispatchers.IO) {
                 getDatabase(requireContext()).akursDatabaseDao.getLastAkurs()
             }
-            currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: "no data")
-            currency.value = akursRate?.rate ?: "No data"
+            currencyNB.value = getString(R.string.NB) + " : " + (nbrb?.price ?: getString(R.string.no_data_label))
+            currency.value = akursRate?.rate ?: getString(R.string.no_data_label)
         }
     }
 

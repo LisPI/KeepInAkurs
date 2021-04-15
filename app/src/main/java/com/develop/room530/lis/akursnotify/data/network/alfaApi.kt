@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify.network
+package com.develop.room530.lis.akursnotify.data.network
 
 import android.util.Log
 import com.develop.room530.lis.akursnotify.getDateDotFormat
@@ -66,7 +66,7 @@ object AlfaApi {
             }
             val akursData = data.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
 
-            val rates = akursData.map {
+            return akursData.flatMap {
                 it.currenciesData.map { cur ->
                     AlfaAkursRate(
                         cur.date,
@@ -76,10 +76,9 @@ object AlfaApi {
                     )
                 }
             }
-            return rates.flatten()
         } catch (e: Exception) {
             Log.d("error", e.toString())
-            return listOf()
+            return emptyList()
         }
     }
 }
