@@ -11,6 +11,7 @@ import com.develop.room530.lis.akursnotify.databinding.FragmentChartBinding
 import com.develop.room530.lis.akursnotify.model.AlfaRateModel
 import com.develop.room530.lis.akursnotify.model.NbRbRateModel
 import com.develop.room530.lis.akursnotify.model.RateModel
+import com.develop.room530.lis.akursnotify.model.mapFromDb
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -38,7 +39,7 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.rates.observe(viewLifecycleOwner, {
-            val a = viewModel.alfaRates.value
+            val a = viewModel.alfaRates.value?.map { rate -> mapFromDb(rate) }
             val b = viewModel.nbrbRates.value
             if (a != null && b != null) {
                 binding.chart.printChart(listOf(a, b))
@@ -49,9 +50,15 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
             when (checkedId) {
                 binding.chip1.id -> {
                     binding.chart.setTouchEnabled(false)
+                    viewModel.updateRatesForChart(1)
                 }
                 binding.chip2.id -> {
                     binding.chart.setTouchEnabled(true)
+                    viewModel.updateRatesForChart(2)
+                }
+                binding.chip2.id -> {
+                    binding.chart.setTouchEnabled(true)
+                    viewModel.updateRatesForChart(3)
                 }
             }
         }
