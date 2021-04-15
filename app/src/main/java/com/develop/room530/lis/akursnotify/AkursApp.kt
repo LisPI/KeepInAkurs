@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 class AkursApp: Application() {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
-
+// FIXME some problem on start app - UI is blocked
     override fun onCreate() {
         super.onCreate()
         delayedInit()

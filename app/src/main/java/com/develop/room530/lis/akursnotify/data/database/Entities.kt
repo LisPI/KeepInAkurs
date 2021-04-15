@@ -7,15 +7,20 @@ import java.util.*
 // TODO save date of change data)
 @Entity(tableName = "akurs")
 data class Akurs(
-    val rate: String,
+    override val rate: String,
     @PrimaryKey
-    val date: Date,
+    override val date: Date,
     val time: String,
-)
+): RateEntity()
 
 @Entity(tableName = "nbrbkurs")
 data class Nbrbkurs(
-    val rate: String,
+    override val rate: String,
     @PrimaryKey
-    val date: Date
-)
+    override val date: Date
+): RateEntity()
+
+sealed class RateEntity {
+    abstract val rate: String
+    abstract val date: Date
+}

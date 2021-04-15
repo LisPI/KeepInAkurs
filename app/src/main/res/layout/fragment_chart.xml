@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".ChartFragment">
 
     <com.github.mikephil.charting.charts.LineChart
@@ -12,42 +12,49 @@
             android:layout_height="match_parent"
             android:layout_margin="4dp" />
 
-    <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chips_group"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+    <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:singleSelection="true"
-            app:selectionRequired="true">
-        <com.google.android.material.chip.Chip
-                android:id="@+id/chip_1"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chips_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/chip_label_one"/>
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-                android:id="@+id/chip_2"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chip_label_two"/>
+            <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_1"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/chip_label_one" />
 
-        <com.google.android.material.chip.Chip
-                android:id="@+id/chip_3"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chip_label_three"/>
+            <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_2"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chip_label_two" />
 
-        <com.google.android.material.chip.Chip
-                android:id="@+id/chip_4"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chip_label_four"/>
+            <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_3"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chip_label_three" />
 
-    </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_4"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chip_label_four" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 </FrameLayout>

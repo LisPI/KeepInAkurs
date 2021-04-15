@@ -1,8 +1,6 @@
 package com.develop.room530.lis.akursnotify
 
 import android.content.Context
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -21,11 +19,13 @@ import kotlinx.coroutines.*
 
 const val KEY_CURRENCY = "key_currency"
 const val KEY_CURRENCYNB = "key_currencyNB"
+const val COMPARING_STATE = "COMPARING_STATE"
 
 class HomeFragment : Fragment() {
 
     private var currency = MutableLiveData<String>()
     private var currencyNB = MutableLiveData<String>()
+    private var comparingState = MutableLiveData<Float>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -65,6 +65,7 @@ class HomeFragment : Fragment() {
             { newValue ->
                 binding.tvCurrencyNB.text = newValue
             })
+        comparingState.observe(viewLifecycleOwner, { setRateComparingState(it) })
 
         binding.swipeToRefresh.setOnRefreshListener {
             binding.tvCurrency.text = getString(R.string.updateMessage)
@@ -76,6 +77,7 @@ class HomeFragment : Fragment() {
         if (savedInstanceState != null) {
             currency.value = savedInstanceState.getString(KEY_CURRENCY)
             currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
+            comparingState.value = savedInstanceState.getFloat(COMPARING_STATE)
         } else getCurrency()
     }
 
@@ -87,12 +89,16 @@ class HomeFragment : Fragment() {
         }
 
         coroutineScope.launch {
+
+            //val db = getDatabase(requireContext())
+
             val nbrbRateNetwork = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRatesNetwork = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
+            //val db = getDatabase(requireContext())
+
             if (isActive)
                 saveRatesInDb(requireContext(), akursRatesNetwork, nbrbRateNetwork)
-
             val akursRates = withContext(Dispatchers.IO) {
                 getDatabase(requireContext()).akursDatabaseDao.getLastAkurs(2).map { mapFromDb(it) }
             }
@@ -103,7 +109,7 @@ class HomeFragment : Fragment() {
 
             if (akursRates.size > 1) {
                 // TODO I want add difference between values
-                setRateComparingState(akursRates[1].rate.compareTo(akursRates[0].rate))
+                comparingState.value = akursRates[1].rate - akursRates[0].rate
             }
 
             currencyNB.value =
@@ -125,6 +131,7 @@ class HomeFragment : Fragment() {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_CURRENCY, currency.value)
         outState.putString(KEY_CURRENCYNB, currencyNB.value)
+        outState.putFloat(COMPARING_STATE, comparingState.value ?: 0F)
     }
 
     override fun onDestroyView() {
@@ -133,33 +140,29 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun setRateComparingState(comparingResult: Int) {
-        when(comparingResult) {
-            -1 -> {
+    private fun setRateComparingState(comparingResult: Float) {
+        when {
+            comparingResult < 0 -> {
                 binding.tvCurrency.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
-                    R.drawable.ic_baseline_arrow_up_24,
+                    R.drawable.ic_triangle_up,
                     0
                 )
-                binding.tvCurrency.compoundDrawables[2].colorFilter = PorterDuffColorFilter(
-                    resources.getColor(R.color.colorPrimary),
-                    PorterDuff.Mode.SRC_IN
-                )
+//                binding.tvCurrency.compoundDrawables[2].colorFilter = PorterDuffColorFilter(
+//                    resources.getColor(R.color.colorPrimary),
+//                    PorterDuff.Mode.SRC_IN
+//                )
             }
-            1 -> {
+            comparingResult > 0 -> {
                 binding.tvCurrency.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
-                    R.drawable.ic_baseline_arrow_down_24,
+                    R.drawable.ic_triangle_down,
                     0
                 )
-                binding.tvCurrency.compoundDrawables[2].colorFilter = PorterDuffColorFilter(
-                    resources.getColor(R.color.colorPrimary),
-                    PorterDuff.Mode.SRC_IN
-                )
             }
-            0 -> {
+            comparingResult == 0F -> {
                 binding.tvCurrency.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
