@@ -45,6 +45,7 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
             }
         })
 
+        binding.chart.setTouchEnabled(false)
         binding.chipsGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 binding.chip1.id -> {

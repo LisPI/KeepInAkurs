@@ -15,4 +15,7 @@
     <string name="chip_label_three">1 month</string>
     <string name="chip_label_four">custom</string>
     <string name="no_data_label">No data</string>
+    <string name="notification_switch_label">Notifications</string>
+    <string name="notification_goal_hint">Notification goal</string>
+    <string name="theme_switch_label">Night theme</string>
 </resources>

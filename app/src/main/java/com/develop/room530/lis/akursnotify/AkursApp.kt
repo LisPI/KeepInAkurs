@@ -1,13 +1,13 @@
 package com.develop.room530.lis.akursnotify
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class AkursApp: Application() {
+class AkursApp: MultiDexApplication() {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 // FIXME some problem on start app - UI is blocked

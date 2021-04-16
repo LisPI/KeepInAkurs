@@ -15,4 +15,7 @@
     <string name="chip_label_three">1 месяц</string>
     <string name="chip_label_four">свободный выбор</string>
     <string name="no_data_label">No data</string>
+    <string name="notification_switch_label">Уведомления</string>
+    <string name="notification_goal_hint">Уведомлять при курсе</string>
+    <string name="theme_switch_label">Ночная тема</string>
 </resources>
