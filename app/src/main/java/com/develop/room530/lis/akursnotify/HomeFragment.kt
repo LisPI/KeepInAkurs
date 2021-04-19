@@ -20,12 +20,14 @@ import kotlinx.coroutines.*
 const val KEY_CURRENCY = "key_currency"
 const val KEY_CURRENCYNB = "key_currencyNB"
 const val COMPARING_STATE = "COMPARING_STATE"
+const val COMPARING_STATE_NB = "COMPARING_STATE_NB"
 
 class HomeFragment : Fragment() {
 
     private var currency = MutableLiveData<String>()
     private var currencyNB = MutableLiveData<String>()
     private var comparingState = MutableLiveData<Float>()
+    private var comparingStateNb = MutableLiveData<Float>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -44,6 +46,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.alfaRateCard.rateLabel.text = getString(R.string.Akurs)
+        binding.nbrbRateCard.rateLabel.text = getString(R.string.NB)
+
         binding.button.setOnClickListener {
             val sp = requireContext().getSharedPreferences(
                 this.getString(R.string.app_pref),
@@ -58,18 +63,24 @@ class HomeFragment : Fragment() {
         currency.observe(
             viewLifecycleOwner,
             { newValue ->
-                binding.tvCurrency.text = newValue
+                binding.alfaRateCard.rate.text = newValue
             })
         currencyNB.observe(
             viewLifecycleOwner,
             { newValue ->
-                binding.tvCurrencyNB.text = newValue
+                binding.nbrbRateCard.rate.text = newValue
             })
-        comparingState.observe(viewLifecycleOwner, { setRateComparingState(it) })
+
+        comparingState.observe(
+            viewLifecycleOwner,
+            { binding.alfaRateCard.rate.setRateComparingState(it) })
+        comparingStateNb.observe(
+            viewLifecycleOwner,
+            { binding.nbrbRateCard.rate.setRateComparingState(it) })
 
         binding.swipeToRefresh.setOnRefreshListener {
-            binding.tvCurrency.text = getString(R.string.updateMessage)
-            binding.tvCurrencyNB.text = ""
+            binding.alfaRateCard.rate.text = getString(R.string.updateMessage)
+            binding.nbrbRateCard.rate.text = getString(R.string.updateMessage)
             binding.swipeToRefresh.isRefreshing = false
             getCurrency()
         }
@@ -78,12 +89,13 @@ class HomeFragment : Fragment() {
             currency.value = savedInstanceState.getString(KEY_CURRENCY)
             currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
             comparingState.value = savedInstanceState.getFloat(COMPARING_STATE)
+            comparingStateNb.value = savedInstanceState.getFloat(COMPARING_STATE_NB)
         } else getCurrency()
     }
 
     private fun getCurrency() {
         if (checkInternet() != true) {
-            currency.value = "Check your Internet connection"
+            currency.value = getString(R.string.no_internet_message)
             currencyNB.value = ""
             return
         }
@@ -95,8 +107,6 @@ class HomeFragment : Fragment() {
             val nbrbRateNetwork = NbrbApi.getUsdRateImpl() //"2020-11-23"
             val akursRatesNetwork = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
-            //val db = getDatabase(requireContext())
-
             if (isActive)
                 saveRatesInDb(requireContext(), akursRatesNetwork, nbrbRateNetwork)
             val akursRates = withContext(Dispatchers.IO) {
@@ -107,16 +117,19 @@ class HomeFragment : Fragment() {
                     .map { mapFromDb(it) }
             }
 
+            // TODO I want add difference between values
             if (akursRates.size > 1) {
-                // TODO I want add difference between values
                 comparingState.value = akursRates[1].rate - akursRates[0].rate
             }
+            if (nbrbRates.size > 1) {
+                comparingStateNb.value = nbrbRates[1].rate - nbrbRates[0].rate
+            }
 
-            currencyNB.value =
-                getString(R.string.NB) + " : " + (nbrbRates.firstOrNull()?.rate.toString()
-                    ?: getString(R.string.no_data_label)) // FIXME
+            // FIXME
+            currencyNB.value = nbrbRates.firstOrNull()?.rate?.format(4)
+                ?: getString(R.string.no_data_label)
             currency.value =
-                akursRates.firstOrNull()?.rate.toString() ?: getString(R.string.no_data_label)
+                akursRates.firstOrNull()?.rate?.format(4) ?: getString(R.string.no_data_label)
         }
     }
 
@@ -132,44 +145,12 @@ class HomeFragment : Fragment() {
         outState.putString(KEY_CURRENCY, currency.value)
         outState.putString(KEY_CURRENCYNB, currencyNB.value)
         outState.putFloat(COMPARING_STATE, comparingState.value ?: 0F)
+        outState.putFloat(COMPARING_STATE_NB, comparingStateNb.value ?: 0F)
     }
 
     override fun onDestroyView() {
         _binding = null
         job.cancel()
         super.onDestroyView()
-    }
-
-    private fun setRateComparingState(comparingResult: Float) {
-        when {
-            comparingResult < 0 -> {
-                binding.tvCurrency.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_triangle_up,
-                    0
-                )
-//                binding.tvCurrency.compoundDrawables[2].colorFilter = PorterDuffColorFilter(
-//                    resources.getColor(R.color.colorPrimary),
-//                    PorterDuff.Mode.SRC_IN
-//                )
-            }
-            comparingResult > 0 -> {
-                binding.tvCurrency.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0,
-                    0,
-                    R.drawable.ic_triangle_down,
-                    0
-                )
-            }
-            comparingResult == 0F -> {
-                binding.tvCurrency.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    0,
-                    0,
-                    0,
-                    0
-                )
-            }
-        }
     }
 }

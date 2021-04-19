@@ -2,7 +2,8 @@
     <string name="app_name">Keep in A-Kurs</string>
     <string name="initMessage">Waiting</string>
     <string name="updateMessage">Updating</string>
-    <string name="NB">Нацбанк</string>
+    <string name="NB">NB RB</string>
+    <string name="Akurs">A-Kurs</string>
     <string name="app_pref">APP_PREF</string>
     <string name="onboarding_complete">OnboardingComplete</string>
     <string name="done_message">OK!</string>
@@ -18,4 +19,6 @@
     <string name="notification_switch_label">Notifications</string>
     <string name="notification_goal_hint">Notification goal</string>
     <string name="theme_switch_label">Night theme</string>
+    <string name="card_label" translatable="false">card label</string>
+    <string name="no_internet_message">Check your Internet connection</string>
 </resources>

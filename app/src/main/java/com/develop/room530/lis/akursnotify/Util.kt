@@ -1,5 +1,6 @@
 package com.develop.room530.lis.akursnotify
 
+import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,4 +34,35 @@ fun getDateHHMMDDMMFormat(date: Date): String {
 fun getDateDDMMFormatFromLong(millis: Long): String {
     val sdf = SimpleDateFormat("HH:mm dd.MM", Locale("ru"))
     return sdf.format(Date(millis))
+}
+
+fun Float.format(digits: Int) = "%.${digits}f".format(this)
+
+fun TextView.setRateComparingState(comparingResult: Float) {
+    when {
+        comparingResult < 0 -> {
+            setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.ic_triangle_up,
+                0
+            )
+        }
+        comparingResult > 0 -> {
+            setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.ic_triangle_down,
+                0
+            )
+        }
+        comparingResult == 0F -> {
+            setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0,
+                0,
+                0,
+                0
+            )
+        }
+    }
 }

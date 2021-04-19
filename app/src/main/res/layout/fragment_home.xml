@@ -15,41 +15,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <TextView
-                    android:id="@+id/tv_currency"
+            <include
+                    android:id="@+id/alfa_rate_card"
+                    layout="@layout/rate_card"
+                    android:layout_margin="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:fontFamily="casual"
-                    android:text="@string/initMessage"
-                    android:textSize="72sp"
-                    android:textStyle="bold"
-                    android:drawablePadding="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                    android:id="@+id/tv_currencyNB"
+            <include
+                    android:id="@+id/nbrb_rate_card"
+                    layout="@layout/rate_card"
+                    android:layout_margin="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:textSize="44sp"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_currency"
-                    tools:text="this is nbrb" />
+                    app:layout_constraintTop_toBottomOf="@+id/alfa_rate_card" />
 
             <Button
                     android:id="@+id/button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:text="Clear"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_currencyNB"
-                    app:layout_constraintStart_toStartOf="@+id/tv_currencyNB"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_currencyNB" />
+                    app:layout_constraintEnd_toEndOf="@+id/nbrb_rate_card"
+                    app:layout_constraintStart_toStartOf="@+id/nbrb_rate_card"
+                    app:layout_constraintTop_toBottomOf="@+id/nbrb_rate_card" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
