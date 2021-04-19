@@ -36,7 +36,7 @@ class OnboardingActivity : AppCompatActivity() {
     private fun getInitRates() {
         CoroutineScope(Dispatchers.Main).launch {
 
-            var date = getDateWithOffset(-64)
+            var date = getDateWithOffset(0)
             val nbrb = NbrbApi.getUsdRateImpl(getDateMinusFormat(date)) //"2020-11-23"
             var akursRates = AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(date)) //"01.12.2020"
             while (akursRates.isEmpty()) {
@@ -44,7 +44,7 @@ class OnboardingActivity : AppCompatActivity() {
                 akursRates = AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(date))
             }
 
-            saveRatesInDb(this@OnboardingActivity, akursRates, nbrb)
+            saveRatesInDb(this@OnboardingActivity, akursRates, nbrb?.let { listOf(nbrb) })
         }
     }
 }

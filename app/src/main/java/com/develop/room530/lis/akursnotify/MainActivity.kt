@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity() {
 
     // TODO add install code - load akurs! (weekend problems now) - onboarding screen in this time:)
     // TODO add feature get rates by date!!!!
-    // TODO view setting - 3 days, weak, month - without title
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

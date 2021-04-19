@@ -60,7 +60,7 @@ object NbrbApi {
             }
         } catch (e: Exception) {
             Log.d("error", e.toString())
-            listOf()
+            emptyList()
         }
     }
 }

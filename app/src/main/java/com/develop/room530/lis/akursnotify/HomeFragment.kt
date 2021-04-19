@@ -95,6 +95,7 @@ class HomeFragment : Fragment() {
 
     private fun getCurrency() {
         if (checkInternet() != true) {
+            // FIXME snackbar?
             currency.value = getString(R.string.no_internet_message)
             currencyNB.value = ""
             return
@@ -108,7 +109,7 @@ class HomeFragment : Fragment() {
             val akursRatesNetwork = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
             if (isActive)
-                saveRatesInDb(requireContext(), akursRatesNetwork, nbrbRateNetwork)
+                saveRatesInDb(requireContext(), akursRatesNetwork, nbrbRateNetwork?.let { listOf(it) })
             val akursRates = withContext(Dispatchers.IO) {
                 getDatabase(requireContext()).akursDatabaseDao.getLastAkurs(2).map { mapFromDb(it) }
             }

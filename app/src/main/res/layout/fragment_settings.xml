@@ -28,11 +28,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:hint="@string/notification_goal_hint"
             android:imeOptions="actionDone"
             android:inputType="numberDecimal"
-            android:hint="@string/notification_goal_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/switch1" />
+
+    <com.google.android.material.slider.Slider
+            android:id="@+id/frequency_slider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:valueFrom="0.0"
+            android:valueTo="5.0"
+            android:stepSize="1.0"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

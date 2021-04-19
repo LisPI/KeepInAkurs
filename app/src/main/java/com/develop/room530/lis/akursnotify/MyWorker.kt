@@ -11,15 +11,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.develop.room530.lis.akursnotify.data.database.Akurs
-import com.develop.room530.lis.akursnotify.data.database.Nbrbkurs
-import com.develop.room530.lis.akursnotify.data.database.getDatabase
+import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class MyWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -33,37 +29,19 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
         val akursRates = AlfaApi.getAkursRatesOnDateImpl()
         val nbrbRates = NbrbApi.getUsdRateHistoryImpl()
 
-        withContext(Dispatchers.IO) {
-            for (rate in akursRates) {
-                getDatabase(appContext).akursDatabaseDao.insertAkurs(
-                    akurs = Akurs(
-                        rate = rate.price,
-                        date = rate.date,
-                        time = rate.time,
-                    )
-                )
-            }
-            for (rate in nbrbRates) {
-                getDatabase(appContext).nbrbDatabaseDao.insertNbrbkurs(
-                    Nbrbkurs(
-                        rate.price.toString(),
-                        rate.date
-                    )
-                )
-            }
-        }
+        saveRatesInDb(appContext, akursRates, nbrbRates)
 
-        Log.d("nbrb currency", nbrbRates.last().price.toString())
+        Log.d("nbrb currency", nbrbRates.lastOrNull()?.price.toString())
         val pushEnabled = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH] }
         if(pushEnabled == true){
-            sendNotification(nbrbRates.last().price.toString())
+            sendNotification(nbrbRates.lastOrNull()?.price.toString())
         }
         Log.d("nbrb currency", pushEnabled.toString())
 
         return Result.success()
     }
 
-    private fun sendNotification(rate : String/*notificationEntity: NotificationFCMEntity*/) {
+    private fun sendNotification(rate : String) {
         val intent = Intent(appContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -72,11 +50,11 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
             PendingIntent.FLAG_ONE_SHOT
         )
 
-        val channelId = "channelId"
+        val channelId = appContext.getString(R.string.channelId)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(appContext, channelId)
             .setSmallIcon(R.drawable.ic_baseline_local_atm_24)
-            .setContentTitle("nbrb current")
+            .setContentTitle(appContext.getString(R.string.interestRate))
             .setContentText(rate)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)

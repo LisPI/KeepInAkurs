@@ -6,9 +6,13 @@ import com.develop.room530.lis.akursnotify.data.network.NbrbModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-suspend fun saveRatesInDb(context: Context, akursRates: List<AlfaAkursRate>, nbrb: NbrbModel?) {
+suspend fun saveRatesInDb(
+    context: Context,
+    akursRates: List<AlfaAkursRate>?,
+    nbrbRates: List<NbrbModel>?
+) {
     withContext(Dispatchers.IO) {
-        for (rate in akursRates) {
+        akursRates?.forEach { rate ->
             getDatabase(context).akursDatabaseDao.insertAkurs(
                 akurs = Akurs(
                     rate = rate.price,
@@ -17,7 +21,7 @@ suspend fun saveRatesInDb(context: Context, akursRates: List<AlfaAkursRate>, nbr
                 )
             )
         }
-        nbrb?.let {
+        nbrbRates?.forEach {
             getDatabase(context).nbrbDatabaseDao.insertNbrbkurs(
                 Nbrbkurs(
                     it.price.toString(),
