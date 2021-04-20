@@ -44,7 +44,7 @@ fun TextView.setRateComparingState(comparingResult: Float) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(
                 0,
                 0,
-                R.drawable.ic_triangle_up,
+                R.drawable.ic_polygon_1,//R.drawable.ic_triangle_up,
                 0
             )
         }
@@ -52,7 +52,7 @@ fun TextView.setRateComparingState(comparingResult: Float) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(
                 0,
                 0,
-                R.drawable.ic_triangle_down,
+                R.drawable.ic_polygon_2,//R.drawable.ic_triangle_down,
                 0
             )
         }

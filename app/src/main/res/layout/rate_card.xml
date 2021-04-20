@@ -3,8 +3,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/rate_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
@@ -14,33 +14,34 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
             android:orientation="vertical">
 
         <TextView
                 android:id="@+id/rate_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:gravity="center"
+                android:fontFamily="@font/open_sans"
                 android:text="@string/card_label"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
                 android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="12sp" />
 
         <TextView
                 android:id="@+id/rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
-                android:fontFamily="@font/roboto"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:padding="8dp"
+                android:fontFamily="@font/open_sans"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
                 tools:text="2.554"
                 tools:drawableEnd="@drawable/ic_triangle_down"
+                android:drawablePadding="8dp"
                 android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"
+                android:textStyle="bold"/>
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

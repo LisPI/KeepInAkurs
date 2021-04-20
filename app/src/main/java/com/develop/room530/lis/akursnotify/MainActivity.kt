@@ -3,6 +3,7 @@ package com.develop.room530.lis.akursnotify
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        title = Html.fromHtml("Держу в <font color=\"red\">А-Курсе</font>")
         setContentView(R.layout.activity_main)
 
         showOnboardingIfNeeded()
