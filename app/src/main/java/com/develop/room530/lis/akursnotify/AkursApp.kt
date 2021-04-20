@@ -4,13 +4,13 @@ import androidx.multidex.MultiDexApplication
 import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class AkursApp: MultiDexApplication() {
+class AkursApp : MultiDexApplication() {
 
     private val applicationScope = CoroutineScope(Dispatchers.Default)
-// FIXME some problem on start app - UI is blocked
     override fun onCreate() {
         super.onCreate()
         delayedInit()
@@ -22,7 +22,18 @@ class AkursApp: MultiDexApplication() {
         }
     }
 
-    private fun setupRecurringWork() {
+    private suspend fun setupRecurringWork() {
+
+        // FIXME nice try)
+//        val oldWork = WorkManager.getInstance(applicationContext)
+//            .getWorkInfosForUniqueWork(MyWorker.WORK_NAME).get()
+//        if (oldWork.size > 0 && oldWork[0].state == WorkInfo.State.CANCELLED)
+//            return
+
+        val currentWorkInterval = dataStore.data.first()[PrefsKeys.WORK_INTERVAL]
+        if (currentWorkInterval == 0F)
+            return
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(true)
@@ -33,14 +44,14 @@ class AkursApp: MultiDexApplication() {
 //            }
             .build()
 
-        val repeatingRequest
-                = PeriodicWorkRequestBuilder<MyWorker>(1, TimeUnit.HOURS)
+        val repeatingRequest = PeriodicWorkRequestBuilder<MyWorker>(1, TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             MyWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,  // FIXME for debug purposes
-            repeatingRequest)
+            ExistingPeriodicWorkPolicy.KEEP,
+            repeatingRequest
+        )
     }
 }

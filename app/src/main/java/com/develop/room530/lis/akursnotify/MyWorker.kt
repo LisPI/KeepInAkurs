@@ -33,15 +33,15 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
 
         Log.d("nbrb currency", nbrbRates.lastOrNull()?.price.toString())
         val pushEnabled = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH] }
-        if(pushEnabled == true){
+        if (pushEnabled == true) {
             sendNotification(nbrbRates.lastOrNull()?.price.toString())
         }
-        Log.d("nbrb currency", pushEnabled.toString())
+        Log.d("push enabled", pushEnabled.toString())
 
         return Result.success()
     }
 
-    private fun sendNotification(rate : String) {
+    private fun sendNotification(rate: String) {
         val intent = Intent(appContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)

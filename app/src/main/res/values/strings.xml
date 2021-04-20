@@ -4,8 +4,8 @@
     <string name="updateMessage">Updating</string>
     <string name="NB">NB RB</string>
     <string name="Akurs">A-Kurs</string>
-    <string name="app_pref">APP_PREF</string>
-    <string name="onboarding_complete">OnboardingComplete</string>
+    <string name="app_pref" translatable="false">APP_PREF</string>
+    <string name="onboarding_complete" translatable="false">OnboardingComplete</string>
     <string name="done_message">OK!</string>
     <string name="onboarding_message">Графики на левой и правой страничках интерактивны, значения обновляются в фоне 1 раз в час. Либо это показать как диалоги)</string>
     <string name="info_nav_label">Info</string>
@@ -21,6 +21,13 @@
     <string name="theme_switch_label">Night theme</string>
     <string name="card_label" translatable="false">card label</string>
     <string name="no_internet_message">Check your Internet connection</string>
-    <string name="channelId">Интересующие курсы</string>
-    <string name="interestRate">Интересный курс</string>
+    <string name="channelId">Rates</string>
+    <string name="interestRate">Interesting exchange rate</string>
+    <string name="background_updates_slider_label">Background updates</string>
+    <string name="slider_0_label">Never</string>
+    <string name="slider_1_label">1 week</string>
+    <string name="slider_2_label">1 day</string>
+    <string name="slider_3_label">4 hour</string>
+    <string name="slider_4_label">1 hour</string>
+    <string name="slider_5_label">15 minutes</string>
 </resources>

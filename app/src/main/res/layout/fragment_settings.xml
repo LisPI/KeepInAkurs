@@ -8,11 +8,10 @@
             android:id="@+id/switch1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
             android:text="@string/notification_switch_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frequency_slider" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch2"
@@ -39,13 +38,23 @@
             android:id="@+id/frequency_slider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:stepSize="1.0"
             android:valueFrom="0.0"
             android:valueTo="5.0"
-            android:stepSize="1.0"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/slider_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/background_updates_slider_label"
+            app:layout_constraintBottom_toTopOf="@+id/frequency_slider"
+            app:layout_constraintEnd_toEndOf="@+id/frequency_slider"
+            app:layout_constraintStart_toStartOf="@+id/frequency_slider" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
