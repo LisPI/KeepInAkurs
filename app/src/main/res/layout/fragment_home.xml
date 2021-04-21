@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -20,9 +20,9 @@
                     layout="@layout/rate_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginStart="16dp"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toStartOf="@+id/nbrb_rate_card"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -35,14 +35,27 @@
                     layout="@layout/rate_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/alfa_rate_card"
                     app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                    android:id="@+id/test_card"
+                    layout="@layout/rate_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="invisible"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="@+id/alfa_rate_card"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/alfa_rate_card"
+                    app:layout_constraintTop_toBottomOf="@+id/alfa_rate_card" />
 
             <Button
                     android:id="@+id/button"
@@ -55,4 +68,12 @@
                     app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-</FrameLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floating_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_baseline_add_24"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,5 +1,6 @@
 package com.develop.room530.lis.akursnotify
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -16,6 +17,7 @@ import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
 import com.develop.room530.lis.akursnotify.model.mapFromDb
 import kotlinx.coroutines.*
+import java.util.*
 
 const val KEY_CURRENCY = "key_currency"
 const val KEY_CURRENCYNB = "key_currencyNB"
@@ -34,6 +36,8 @@ class HomeFragment : Fragment() {
 
     private var job = Job()
     private val coroutineScope = CoroutineScope(job + Dispatchers.Main)
+
+    private var dialog: DatePickerDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +74,11 @@ class HomeFragment : Fragment() {
             { newValue ->
                 binding.nbrbRateCard.rate.text = newValue
             })
+
+        binding.floatingActionButton.setOnClickListener {
+            dialog = showDatePicker()
+            dialog?.show()
+        }
 
         comparingState.observe(
             viewLifecycleOwner,
@@ -109,7 +118,10 @@ class HomeFragment : Fragment() {
             val akursRatesNetwork = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
             if (isActive)
-                saveRatesInDb(requireContext(), akursRatesNetwork, nbrbRateNetwork?.let { listOf(it) })
+                saveRatesInDb(
+                    requireContext(),
+                    akursRatesNetwork,
+                    nbrbRateNetwork?.let { listOf(it) })
             val akursRates = withContext(Dispatchers.IO) {
                 getDatabase(requireContext()).akursDatabaseDao.getLastAkurs(2).map { mapFromDb(it) }
             }
@@ -152,6 +164,22 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         job.cancel()
+        dialog?.cancel()
         super.onDestroyView()
+    }
+
+    fun showDatePicker(): DatePickerDialog {
+        val calendar = Calendar.getInstance()
+        return DatePickerDialog(
+            requireContext(),
+            { _, pickerYear, monthOfYear, dayOfMonth -> // FIXME implement recycler
+                binding.testCard.rateCard.visibility = View.VISIBLE
+                binding.testCard.rateLabel.text = "Нацбанк на 01.04.2021"
+                binding.testCard.rate.text = "2,345"
+            },
+            calendar[Calendar.YEAR],
+            calendar[Calendar.MONTH],
+            calendar[Calendar.DAY_OF_MONTH]
+        )
     }
 }

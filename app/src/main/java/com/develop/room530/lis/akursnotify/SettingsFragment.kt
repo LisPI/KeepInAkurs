@@ -86,7 +86,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 v.clearFocus()
                 lifecycleScope.launchWhenCreated {
                     requireActivity().dataStore.edit { preferences ->
-                        preferences[PrefsKeys.PUSH_RATE] = v.text.toString().toFloat()
+                        preferences[PrefsKeys.PUSH_RATE] = v.text.toString().toFloatOrNull() ?: 0f // FIXME
                     }
                     pushPanel.isEndIconVisible = true
                 }
