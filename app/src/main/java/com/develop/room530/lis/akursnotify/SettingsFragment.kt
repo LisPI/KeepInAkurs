@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.*
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 
@@ -29,18 +30,30 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private lateinit var pushSwitch: SwitchMaterial
     private lateinit var frequencySlider: Slider
+    private lateinit var pushPanel: TextInputLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pushSwitch = view.findViewById(R.id.switch1)
+        pushSwitch = view.findViewById(R.id.switch_notification)
         frequencySlider = view.findViewById(R.id.frequency_slider)
+        pushPanel = view.findViewById(R.id.push_goals)
 
         lifecycleScope.launchWhenCreated {
-            pushSwitch.isChecked = requireActivity().dataStore.data.first()[PrefsKeys.PUSH] ?: DEFAULT_PUSH_SETTINGS
-            frequencySlider.value = requireActivity().dataStore.data.first()[PrefsKeys.WORK_INTERVAL] ?: DEFAULT_WORK_INTERVAL
+            pushSwitch.isChecked =
+                requireActivity().dataStore.data.first()[PrefsKeys.PUSH] ?: DEFAULT_PUSH_SETTINGS
+            if(!pushSwitch.isChecked)
+                pushPanel.visibility = View.GONE
+            frequencySlider.value =
+                requireActivity().dataStore.data.first()[PrefsKeys.WORK_INTERVAL]
+                    ?: DEFAULT_WORK_INTERVAL
         }
 
         pushSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (!isChecked) {
+                pushPanel.visibility = View.GONE
+            } else {
+                pushPanel.visibility = View.VISIBLE
+            }
             lifecycleScope.launchWhenCreated {
                 requireActivity().dataStore.edit { preferences ->
                     preferences[PrefsKeys.PUSH] = isChecked
@@ -81,8 +94,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 //            }
             .build()
 
-        if(newInterval == 0F)
-        {
+        if (newInterval == 0F) {
             WorkManager.getInstance(context).cancelUniqueWork(MyWorker.WORK_NAME)
             return
         }
