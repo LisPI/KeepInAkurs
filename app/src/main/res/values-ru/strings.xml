@@ -15,7 +15,7 @@
     <string name="chip_label_four">свободный выбор</string>
     <string name="no_data_label">Нет данных</string>
     <string name="notification_switch_label">Уведомления</string>
-    <string name="notification_goal_hint">Уведомлять при курсе</string>
+    <string name="notification_goal_hint">Уведомлять при курсе меньше</string>
     <string name="theme_switch_label">Ночная тема</string>
     <string name="no_internet_message">Пропал интернет(</string>
     <string name="channelId">Интересующие курсы</string>

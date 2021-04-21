@@ -34,7 +34,10 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
         Log.d("nbrb currency", nbrbRates.lastOrNull()?.price.toString())
         val pushEnabled = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH] }
         if (pushEnabled == true) {
-            sendNotification(nbrbRates.lastOrNull()?.price.toString())
+            val pushRate = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH_RATE] }
+            val rate = nbrbRates.lastOrNull()?.price
+            if (pushRate != null && rate != null && pushRate > rate)
+                sendNotification(rate.toString())
         }
         Log.d("push enabled", pushEnabled.toString())
 

@@ -3,6 +3,7 @@ package com.develop.room530.lis.akursnotify
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
@@ -24,6 +25,7 @@ val Context.dataStore by preferencesDataStore(name = SETTINGS_NAME)
 object PrefsKeys {
     val PUSH = booleanPreferencesKey("push_key")
     val WORK_INTERVAL = floatPreferencesKey("slider_value")
+    val PUSH_RATE = floatPreferencesKey("push_rate")
 }
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
@@ -38,14 +40,20 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         frequencySlider = view.findViewById(R.id.frequency_slider)
         pushPanel = view.findViewById(R.id.push_goals)
 
+        pushPanel.isEndIconVisible = false
+
         lifecycleScope.launchWhenCreated {
             pushSwitch.isChecked =
                 requireActivity().dataStore.data.first()[PrefsKeys.PUSH] ?: DEFAULT_PUSH_SETTINGS
-            if(!pushSwitch.isChecked)
+            if (!pushSwitch.isChecked)
                 pushPanel.visibility = View.GONE
             frequencySlider.value =
                 requireActivity().dataStore.data.first()[PrefsKeys.WORK_INTERVAL]
                     ?: DEFAULT_WORK_INTERVAL
+
+            pushPanel.editText?.setText(
+                requireActivity().dataStore.data.first()[PrefsKeys.PUSH_RATE].toString())
+
         }
 
         pushSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -70,6 +78,20 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 4F -> getString(R.string.slider_4_label)
                 else -> getString(R.string.slider_5_label)
             }
+        }
+
+        pushPanel.editText?.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // TODO validate input, save in datastore, change view state
+                v.clearFocus()
+                lifecycleScope.launchWhenCreated {
+                    requireActivity().dataStore.edit { preferences ->
+                        preferences[PrefsKeys.PUSH_RATE] = v.text.toString().toFloat()
+                    }
+                    pushPanel.isEndIconVisible = true
+                }
+            }
+            false
         }
 
         frequencySlider.addOnChangeListener { rangeSlider, value, fromUser ->
