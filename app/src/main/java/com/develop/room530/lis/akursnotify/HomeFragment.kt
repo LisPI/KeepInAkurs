@@ -5,11 +5,13 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.develop.room530.lis.akursnotify.data.database.getDatabase
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
@@ -33,9 +35,6 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
-
-    private var job = Job()
-    private val coroutineScope = CoroutineScope(job + Dispatchers.Main)
 
     private var dialog: DatePickerDialog? = null
 
@@ -110,7 +109,7 @@ class HomeFragment : Fragment() {
             return
         }
 
-        coroutineScope.launch {
+        lifecycleScope.launch {
 
             //val db = getDatabase(requireContext())
 
@@ -155,6 +154,7 @@ class HomeFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        Log.d("1", "onSaveInstanceState")
         outState.putString(KEY_CURRENCY, currency.value)
         outState.putString(KEY_CURRENCYNB, currencyNB.value)
         outState.putFloat(COMPARING_STATE, comparingState.value ?: 0F)
@@ -163,7 +163,6 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         _binding = null
-        job.cancel()
         dialog?.cancel()
         super.onDestroyView()
     }

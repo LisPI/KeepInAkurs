@@ -100,7 +100,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     preferences[PrefsKeys.WORK_INTERVAL] = value
                 }
             }
-            updatePeriodicWork(requireContext(), value)
+            updatePeriodicWork(requireContext(), value) // FIXME update only when change
         }
     }
 
