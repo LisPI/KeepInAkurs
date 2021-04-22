@@ -1,11 +1,13 @@
 package com.develop.room530.lis.akursnotify
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 class AkursApp : MultiDexApplication() {
@@ -14,11 +16,22 @@ class AkursApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         delayedInit()
+        changeThemeIfNeeded()
     }
 
     private fun delayedInit() {
         applicationScope.launch {
             setupRecurringWork()
+        }
+    }
+
+    private fun changeThemeIfNeeded() {
+        runBlocking {
+            val isNightTheme = dataStore.data.first()[PrefsKeys.NIGHT_THEME] ?: DEFAULT_THEME_SETTINGS
+            if (isNightTheme)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
 

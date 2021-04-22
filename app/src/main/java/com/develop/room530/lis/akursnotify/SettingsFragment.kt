@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
@@ -20,10 +23,12 @@ import java.util.concurrent.TimeUnit
 private const val SETTINGS_NAME = "user_preferences"
 const val DEFAULT_WORK_INTERVAL = 4F
 const val DEFAULT_PUSH_SETTINGS = false
+const val DEFAULT_THEME_SETTINGS = false
 val Context.dataStore by preferencesDataStore(name = SETTINGS_NAME)
 
 object PrefsKeys {
     val PUSH = booleanPreferencesKey("push_key")
+    val NIGHT_THEME = booleanPreferencesKey("night_theme_key")
     val WORK_INTERVAL = floatPreferencesKey("slider_value")
     val PUSH_RATE = floatPreferencesKey("push_rate")
 }
@@ -31,12 +36,14 @@ object PrefsKeys {
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private lateinit var pushSwitch: SwitchMaterial
+    private lateinit var themeSwitch: SwitchMaterial
     private lateinit var frequencySlider: Slider
     private lateinit var pushPanel: TextInputLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pushSwitch = view.findViewById(R.id.switch_notification)
+        themeSwitch = view.findViewById(R.id.switch_night_theme)
         frequencySlider = view.findViewById(R.id.frequency_slider)
         pushPanel = view.findViewById(R.id.push_goals)
 
@@ -45,6 +52,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         lifecycleScope.launchWhenCreated {
             pushSwitch.isChecked =
                 requireActivity().dataStore.data.first()[PrefsKeys.PUSH] ?: DEFAULT_PUSH_SETTINGS
+            themeSwitch.isChecked =
+                requireActivity().dataStore.data.first()[PrefsKeys.NIGHT_THEME] ?: DEFAULT_THEME_SETTINGS
             if (!pushSwitch.isChecked)
                 pushPanel.visibility = View.GONE
             frequencySlider.value =
@@ -52,7 +61,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     ?: DEFAULT_WORK_INTERVAL
 
             pushPanel.editText?.setText(
-                requireActivity().dataStore.data.first()[PrefsKeys.PUSH_RATE].toString())
+                requireActivity().dataStore.data.first()[PrefsKeys.PUSH_RATE].toString()
+            )
 
         }
 
@@ -65,6 +75,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             lifecycleScope.launchWhenCreated {
                 requireActivity().dataStore.edit { preferences ->
                     preferences[PrefsKeys.PUSH] = isChecked
+                }
+            }
+        }
+
+        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+            else
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+            lifecycleScope.launchWhenCreated {
+                requireActivity().dataStore.edit { preferences ->
+                    preferences[PrefsKeys.NIGHT_THEME] = isChecked
                 }
             }
         }
@@ -86,7 +108,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 v.clearFocus()
                 lifecycleScope.launchWhenCreated {
                     requireActivity().dataStore.edit { preferences ->
-                        preferences[PrefsKeys.PUSH_RATE] = v.text.toString().toFloatOrNull() ?: 0f // FIXME
+                        preferences[PrefsKeys.PUSH_RATE] =
+                            v.text.toString().toFloatOrNull() ?: 0f // FIXME
                     }
                     pushPanel.isEndIconVisible = true
                 }
@@ -95,12 +118,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
 
         frequencySlider.addOnChangeListener { rangeSlider, value, fromUser ->
-            lifecycleScope.launchWhenCreated {
-                requireActivity().dataStore.edit { preferences ->
-                    preferences[PrefsKeys.WORK_INTERVAL] = value
+            if (fromUser) {
+                lifecycleScope.launchWhenCreated {
+                    requireActivity().dataStore.edit { preferences ->
+                        preferences[PrefsKeys.WORK_INTERVAL] = value
+                    }
                 }
+                updatePeriodicWork(requireContext(), value) // FIXME update only when change
             }
-            updatePeriodicWork(requireContext(), value) // FIXME update only when change
         }
     }
 

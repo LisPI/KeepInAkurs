@@ -33,6 +33,8 @@
             android:layout_marginTop="32dp"
             android:padding="8dp"
             android:gravity="center"
+            android:fontFamily="@font/roboto"
+            android:textAppearance="?attr/textAppearanceBody2"
             android:text="@string/onboarding_message"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

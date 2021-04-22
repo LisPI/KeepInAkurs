@@ -7,7 +7,7 @@
     <string name="app_pref" translatable="false">APP_PREF</string>
     <string name="onboarding_complete" translatable="false">OnboardingComplete</string>
     <string name="done_message">OK!</string>
-    <string name="onboarding_message">Графики на левой и правой страничках интерактивны, значения обновляются в фоне 1 раз в час. Либо это показать как диалоги)</string>
+    <string name="onboarding_message">Use app for get fresh updates of rates, view charts, schedule push notifications</string>
     <string name="info_nav_label">Info</string>
     <string name="charts_nav_label">Charts</string>
     <string name="settings_nav_label">Settings</string>

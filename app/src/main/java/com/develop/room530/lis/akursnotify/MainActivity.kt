@@ -17,9 +17,11 @@ class MainActivity : AppCompatActivity() {
     private var chart: ChartFragment? = null
     private var settings: SettingsFragment? = null
 
-    override fun onBackPressed() {
+    override fun onBackPressed() { // FIXME change theme bug
         if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is HomeFragment){
             supportFragmentManager.commit {
+                if (home == null)
+                    home = HomeFragment()
                 replace(R.id.fragment_container_view, home!!)
                 attach(home!!)
             }
