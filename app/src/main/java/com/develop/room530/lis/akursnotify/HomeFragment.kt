@@ -167,7 +167,7 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
     }
 
-    fun showDatePicker(): DatePickerDialog {
+    private fun showDatePicker(): DatePickerDialog {
         val calendar = Calendar.getInstance()
         return DatePickerDialog(
             requireContext(),
@@ -175,6 +175,13 @@ class HomeFragment : Fragment() {
                 binding.testCard.rateCard.visibility = View.VISIBLE
                 binding.testCard.rateLabel.text = "Нацбанк на 01.04.2021"
                 binding.testCard.rate.text = "2,345"
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    // TODO through DB
+                    val nbrbRate = NbrbApi.getUsdRateImpl("$pickerYear-${monthOfYear+1}-$dayOfMonth") //"2020-11-23"
+                    binding.testCard.rateLabel.text = "Нацбанк на $pickerYear-${monthOfYear+1}-$dayOfMonth"
+                    binding.testCard.rate.text = nbrbRate?.price.toString()
+                }
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
