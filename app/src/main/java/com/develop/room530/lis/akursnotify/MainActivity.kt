@@ -5,30 +5,23 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
-import androidx.fragment.app.commit
+import androidx.fragment.app.commitNow
 import com.google.android.material.bottomnavigation.BottomNavigationView
+
+private const val HOME = "home"
+private const val SETTINGS = "settings"
+private const val CHART = "chart"
 
 class MainActivity : AppCompatActivity() {
 
 
     // TODO add install code - load akurs! (weekend problems now) - onboarding screen in this time:)
-
-    private var home: HomeFragment? = null
-    private var chart: ChartFragment? = null
-    private var settings: SettingsFragment? = null
-
     override fun onBackPressed() { // FIXME change theme bug
-        if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is HomeFragment){
-            supportFragmentManager.commit {
-                if (home == null)
-                    home = HomeFragment()
-                replace(R.id.fragment_container_view, home!!)
-                attach(home!!)
-            }
+        if(supportFragmentManager.findFragmentById(R.id.fragment_container_view)?.tag != HOME) {
+            changeScreen(HOME)
             findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId =
                 R.id.HomeFragment
-        }
-        else
+        } else
             super.onBackPressed()
     }
 
@@ -39,9 +32,8 @@ class MainActivity : AppCompatActivity() {
         showOnboardingIfNeeded()
 
         if (savedInstanceState == null) {
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                add<HomeFragment>(R.id.fragment_container_view)
+            supportFragmentManager.commitNow {
+                add<HomeFragment>(R.id.fragment_container_view, HOME)
             }
             findViewById<BottomNavigationView>(R.id.bottom_navigation).selectedItemId =
                 R.id.HomeFragment
@@ -49,78 +41,32 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<BottomNavigationView>(R.id.bottom_navigation).setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.ChartsFragment -> {
-                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is ChartFragment)
-                        supportFragmentManager.commit {
-                            val fr =
-                                supportFragmentManager.findFragmentById(R.id.fragment_container_view)
-                            when (fr) {
-                                is HomeFragment -> {
-                                    home = fr
-                                    detach(fr)
-                                }
-                                is SettingsFragment -> {
-                                    detach(fr)
-                                    settings = fr
-                                }
-                            }
-                            if (chart == null)
-                                chart = ChartFragment()
-                            replace(R.id.fragment_container_view, chart!!)
-                            attach(chart!!)
-                        }
-                    true
-                }
-                R.id.SettingsFragment -> {
-                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is SettingsFragment)
-                        supportFragmentManager.commit {
-                            val fr =
-                                supportFragmentManager.findFragmentById(R.id.fragment_container_view)
-                            when (fr) {
-                                is HomeFragment -> {
-                                    home = fr
-                                    detach(fr)
-                                }
-                                is ChartFragment -> {
-                                    chart = fr
-                                    detach(fr)
-                                }
-                            }
-
-                            if (settings == null)
-                                settings = SettingsFragment()
-                            replace(R.id.fragment_container_view, settings!!)
-                            attach(settings!!)
-                        }
-                    true
-                }
-                R.id.HomeFragment -> {
-
-
-                    if (supportFragmentManager.findFragmentById(R.id.fragment_container_view) !is HomeFragment)
-                        supportFragmentManager.commit {
-                            val fr =
-                                supportFragmentManager.findFragmentById(R.id.fragment_container_view)
-                            when (fr) {
-                                is SettingsFragment -> {
-                                    settings = fr
-                                    detach(fr)
-                                }
-                                is ChartFragment -> {
-                                    chart = fr
-                                    detach(fr)
-                                }
-                            }
-
-                            if (home == null)
-                                home = HomeFragment()
-                            replace(R.id.fragment_container_view, home!!)
-                            attach(home!!)
-                        }
-                    true
-                }
-                else -> false
+                R.id.ChartsFragment -> if(supportFragmentManager.findFragmentById(R.id.fragment_container_view)?.tag != CHART) changeScreen(CHART)
+                R.id.HomeFragment -> if(supportFragmentManager.findFragmentById(R.id.fragment_container_view)?.tag != HOME) changeScreen(HOME)
+                R.id.SettingsFragment -> if(supportFragmentManager.findFragmentById(R.id.fragment_container_view)?.tag != SETTINGS) changeScreen(SETTINGS)
             }
+            true
+        }
+    }
+
+    private fun changeScreen(newScreenTag: String) {
+        supportFragmentManager.findFragmentById(R.id.fragment_container_view)?.let {
+            supportFragmentManager.beginTransaction()
+                .detach(it)
+                .commitNow()
+        }
+        val requestedFragment = supportFragmentManager.findFragmentByTag(newScreenTag)
+        if (requestedFragment == null) {
+            when (newScreenTag) {
+                HOME -> supportFragmentManager.beginTransaction()
+                    .add<HomeFragment>(R.id.fragment_container_view, HOME).commitNow()
+                SETTINGS -> supportFragmentManager.beginTransaction()
+                    .add<SettingsFragment>(R.id.fragment_container_view, SETTINGS).commitNow()
+                CHART -> supportFragmentManager.beginTransaction()
+                    .add<ChartFragment>(R.id.fragment_container_view, CHART).commitNow()
+            }
+        } else {
+            supportFragmentManager.beginTransaction().attach(requestedFragment).commitNow()
         }
     }
 
@@ -133,3 +79,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+
+// FIXME debug code
+//            chart = ChartFragment()
+//            settings = SettingsFragment()
+//
+//            Log.d("1", supportFragmentManager.findFragmentById(R.id.fragment_container_view).toString())
+//            supportFragmentManager.beginTransaction().add(R.id.fragment_container_view, chart!!,"chart").commitNow()
+//            Log.d("2", supportFragmentManager.findFragmentById(R.id.fragment_container_view).toString())
+//            supportFragmentManager.beginTransaction().hide(supportFragmentManager.findFragmentByTag("chart")!!).commitNow()
+//            Log.d("3", supportFragmentManager.findFragmentById(R.id.fragment_container_view).toString())
+//            supportFragmentManager.beginTransaction().add(R.id.fragment_container_view, settings!!).commitNow()
+//            Log.d("4", supportFragmentManager.findFragmentById(R.id.fragment_container_view).toString())
+//            supportFragmentManager.beginTransaction().detach(settings!!).commitNow()
+//            Log.d("5", supportFragmentManager.findFragmentById(R.id.fragment_container_view).toString())

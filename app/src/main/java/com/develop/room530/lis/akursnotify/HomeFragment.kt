@@ -38,17 +38,53 @@ class HomeFragment : Fragment() {
 
     private var dialog: DatePickerDialog? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("home", "onCreate $this")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("home", "onStart $this")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("home", "onResume $this")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("home", "onPause $this")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("home", "onStop $this")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("home", "onDetach $this")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("home", "onDestroy $this")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("home", "onCreateView $this")
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d("home", "onViewCreated $this")
         binding.alfaRateCard.rateLabel.text = getString(R.string.Akurs)
         binding.nbrbRateCard.rateLabel.text = getString(R.string.NB)
 
@@ -93,12 +129,28 @@ class HomeFragment : Fragment() {
             getCurrency()
         }
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null) { // FIXME after theme change bundle is not null but livedata is null
             currency.value = savedInstanceState.getString(KEY_CURRENCY)
             currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
             comparingState.value = savedInstanceState.getFloat(COMPARING_STATE)
             comparingStateNb.value = savedInstanceState.getFloat(COMPARING_STATE_NB)
         } else getCurrency()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("home", "onSaveInstanceState")
+        outState.putString(KEY_CURRENCY, currency.value)
+        outState.putString(KEY_CURRENCYNB, currencyNB.value)
+        outState.putFloat(COMPARING_STATE, comparingState.value ?: 0F)
+        outState.putFloat(COMPARING_STATE_NB, comparingStateNb.value ?: 0F)
+    }
+
+    override fun onDestroyView() {
+        Log.d("home", "onDestroyView $this")
+        _binding = null
+        dialog?.cancel()
+        super.onDestroyView()
     }
 
     private fun getCurrency() {
@@ -150,21 +202,6 @@ class HomeFragment : Fragment() {
             .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.d("1", "onSaveInstanceState")
-        outState.putString(KEY_CURRENCY, currency.value)
-        outState.putString(KEY_CURRENCYNB, currencyNB.value)
-        outState.putFloat(COMPARING_STATE, comparingState.value ?: 0F)
-        outState.putFloat(COMPARING_STATE_NB, comparingStateNb.value ?: 0F)
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        dialog?.cancel()
-        super.onDestroyView()
     }
 
     private fun showDatePicker(): DatePickerDialog {

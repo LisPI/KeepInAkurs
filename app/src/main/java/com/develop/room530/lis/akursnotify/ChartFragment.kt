@@ -2,6 +2,7 @@ package com.develop.room530.lis.akursnotify
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,41 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
     private val binding get() = requireNotNull(_binding)
 
     private val viewModel by viewModels<ChartViewModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("chart", "onCreate $this")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("chart", "onStart $this")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("chart", "onResume $this")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("chart", "onPause $this")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("chart", "onStop $this")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("chart", "onDetach $this")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("chart", "onDestroy $this")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +106,7 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
 
     override fun onDestroyView() {
         _binding = null
+        Log.d("chart", "onDestroyView $this")
         super.onDestroyView()
     }
 
