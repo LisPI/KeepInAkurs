@@ -36,6 +36,8 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
 
+    private val adapter = RateAdapter()
+
     private var dialog: DatePickerDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +89,12 @@ class HomeFragment : Fragment() {
         Log.d("home", "onViewCreated $this")
         binding.alfaRateCard.rateLabel.text = getString(R.string.Akurs)
         binding.nbrbRateCard.rateLabel.text = getString(R.string.NB)
+
+        binding.rates.adapter = adapter
+        MockRatesData.liveNbRb.observe(viewLifecycleOwner){
+            adapter.submitList(it)
+        }
+        MockRatesData.newNbRb2()
 
         binding.button.setOnClickListener {
             val sp = requireContext().getSharedPreferences(
@@ -161,7 +169,7 @@ class HomeFragment : Fragment() {
             return
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
 
             //val db = getDatabase(requireContext())
 
@@ -210,9 +218,6 @@ class HomeFragment : Fragment() {
             requireContext(),
             { _, pickerYear, monthOfYear, dayOfMonth -> // FIXME implement recycler
                 binding.testCard.rateCard.visibility = View.VISIBLE
-                binding.testCard.rateLabel.text = "Нацбанк на 01.04.2021"
-                binding.testCard.rate.text = "2,345"
-
                 viewLifecycleOwner.lifecycleScope.launch {
                     // TODO through DB
                     val nbrbRate = NbrbApi.getUsdRateImpl("$pickerYear-${monthOfYear+1}-$dayOfMonth") //"2020-11-23"

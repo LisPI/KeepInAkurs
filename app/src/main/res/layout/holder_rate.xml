@@ -3,8 +3,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/rate_card"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
@@ -37,7 +38,6 @@
                 android:layout_gravity="center"
                 android:padding="8dp"
                 tools:text="2.554"
-                tools:drawableEnd="@drawable/ic_triangle_down_yan"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textSize="22sp"
                 android:textStyle="bold" />

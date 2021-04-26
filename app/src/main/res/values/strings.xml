@@ -2,7 +2,7 @@
     <string name="app_name">Keep in A-Kurs</string>
     <string name="initMessage">Waiting</string>
     <string name="updateMessage">Updating</string>
-    <string name="NB">NB RB</string>
+    <string name="NB">National</string>
     <string name="Akurs">A-Kurs</string>
     <string name="app_pref" translatable="false">APP_PREF</string>
     <string name="onboarding_complete" translatable="false">OnboardingComplete</string>
@@ -30,4 +30,6 @@
     <string name="slider_3_label">4 hour</string>
     <string name="slider_4_label">1 hour</string>
     <string name="slider_5_label">15 minutes</string>
+    <string name="fab_label">History</string>
+    <string name="fab_content_desc" translatable="false">Pick date for view rates history</string>
 </resources>

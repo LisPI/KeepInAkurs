@@ -12,6 +12,8 @@ object MockRatesData {
         NbRbRateModel(2.4f, Date()),
         NbRbRateModel(2.2f, Date(Date().time + 500000)),
         NbRbRateModel(2.6f, Date(Date().time + 1000000)),
+        NbRbRateModel(2.7f, Date(Date().time + 1100000)),
+        NbRbRateModel(2.456f, Date(Date().time + 1200000)),
     )
     private var alfaData = listOf(
         AlfaRateModel(2.2f, Date(Date().time - 500000), ""),
