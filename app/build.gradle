@@ -45,6 +45,11 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+//    FIX for API 19 support
+//    implementation ("com.squareup.okhttp3:okhttp:3.12.12"){
+//        force = true
+//    }
+//    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.12'
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
@@ -75,4 +80,6 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha08"
 
     implementation "androidx.multidex:multidex:2.0.1"
+
+    implementation "com.getbase:floatingactionbutton:1.10.1"
 }

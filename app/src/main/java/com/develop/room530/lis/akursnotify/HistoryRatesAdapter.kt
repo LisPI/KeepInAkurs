@@ -5,16 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.develop.room530.lis.akursnotify.data.database.RatesGoal
+import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
 import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
 
-class RateAdapter : ListAdapter<RatesGoal, RateAdapter.ViewHolder>(RatesDiffCallback()) { // FIXME change RateModel to UIRate
+class HistoryRatesAdapter : ListAdapter<NbrbHistory, HistoryRatesAdapter.ViewHolder>(RatesHistoryDiffCallback()) { // FIXME change RateModel to UIRate
     class ViewHolder(private val binding: GoalCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: RatesGoal) {
+        fun bind(item: NbrbHistory) {
             with(binding) {
                 rate.text = item.rate.format(4)
-                rateLabel.text = item.bank
-                rateTrend.text = if(item.trend < 0) "дешевле" else "дороже"
+                rateLabel.text = "Нацбанк на ${getDateDDMMFormat(item.date)}"
+                //rateTrend.text = getDateDDMMFormat(item.date)
             }
         }
     }
@@ -30,10 +30,10 @@ class RateAdapter : ListAdapter<RatesGoal, RateAdapter.ViewHolder>(RatesDiffCall
     }
 }
 
-class RatesDiffCallback : DiffUtil.ItemCallback<RatesGoal>() {
-    override fun areItemsTheSame(oldItem: RatesGoal, newItem: RatesGoal) =
-        oldItem.id == newItem.id
+class RatesHistoryDiffCallback : DiffUtil.ItemCallback<NbrbHistory>() {
+    override fun areItemsTheSame(oldItem: NbrbHistory, newItem: NbrbHistory) =
+        oldItem.date == newItem.date
 
-    override fun areContentsTheSame(oldItem: RatesGoal, newItem: RatesGoal) =
+    override fun areContentsTheSame(oldItem: NbrbHistory, newItem: NbrbHistory) =
         oldItem == newItem
 }

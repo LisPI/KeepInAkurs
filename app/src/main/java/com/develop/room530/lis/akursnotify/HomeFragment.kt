@@ -1,6 +1,8 @@
 package com.develop.room530.lis.akursnotify
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -12,10 +14,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
+import com.develop.room530.lis.akursnotify.data.database.RatesGoal
 import com.develop.room530.lis.akursnotify.data.database.getDatabase
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
+import com.develop.room530.lis.akursnotify.databinding.DialogCreateGoalBinding
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
 import com.develop.room530.lis.akursnotify.model.mapFromDb
 import kotlinx.coroutines.*
@@ -37,8 +42,9 @@ class HomeFragment : Fragment() {
     private val binding get() = requireNotNull(_binding)
 
     private val adapter = RateAdapter()
+    private val historyAdapter = HistoryRatesAdapter()
 
-    private var dialog: DatePickerDialog? = null
+    private var dialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,11 +97,23 @@ class HomeFragment : Fragment() {
         binding.nbrbRateCard.rateLabel.text = getString(R.string.NB)
 
         binding.goalsCard.rates.adapter = adapter
-        binding.historyCard.rates.adapter = adapter
-        MockRatesData.liveNbRb.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-        }
-        MockRatesData.newNbRb2()
+        binding.historyCard.rates.adapter = historyAdapter
+//        MockRatesData.liveNbRb.observe(viewLifecycleOwner) {
+//            adapter.submitList(it)
+//        }
+//        MockRatesData.newNbRb2()
+
+        getDatabase(requireContext()).nbrbHistoryDatabaseDao.getNbrbHistory()
+            .observe(viewLifecycleOwner) {
+                historyAdapter.submitList(it)
+                binding.historyCard.goalsLabel.text = "История курсов (${it.size})"
+            }
+
+        getDatabase(requireContext()).ratesGoalDatabaseDao.getRatesGoals()
+            .observe(viewLifecycleOwner) {
+                adapter.submitList(it)
+                binding.goalsCard.goalsLabel.text = "Мои цели (${it.size})"
+            }
 
         binding.goalsCard.rateCard.setOnClickListener {
 //            binding.goalsCard.rates.animate().setDuration(1000L).alpha(0F).start()
@@ -108,14 +126,12 @@ class HomeFragment : Fragment() {
             if (binding.goalsCard.rates.visibility != View.GONE) {
                 binding.goalsCard.rates.visibility = View.GONE
                 binding.goalsCard.delimiter.visibility = View.GONE
-            }
-            else{
+            } else {
                 binding.goalsCard.rates.visibility = View.VISIBLE
                 binding.goalsCard.delimiter.visibility = View.VISIBLE
             }
         }
 
-        binding.historyCard.goalsLabel.text = "История курсов (8)"
         binding.historyCard.rateCard.setOnClickListener {
             //binding.goalsCard.rates.animate().setDuration(1000L).yBy(0F).start()
 
@@ -127,8 +143,7 @@ class HomeFragment : Fragment() {
             if (binding.historyCard.rates.visibility != View.GONE) {
                 binding.historyCard.rates.visibility = View.GONE
                 binding.historyCard.delimiter.visibility = View.GONE
-            }
-            else{
+            } else {
                 binding.historyCard.rates.visibility = View.VISIBLE
                 binding.historyCard.delimiter.visibility = View.VISIBLE
             }
@@ -156,8 +171,14 @@ class HomeFragment : Fragment() {
                 binding.nbrbRateCard.rate.text = newValue
             })
 
-        binding.floatingActionButton.setOnClickListener {
-            dialog = showDatePicker()
+        // TODO youtube example
+        binding.actionA.setOnClickListener {
+            dialog = getNewGoalDialog()
+            dialog?.show()
+        }
+
+        binding.actionB.setOnClickListener {
+            dialog = getDatePickerDialog()
             dialog?.show()
         }
 
@@ -170,7 +191,9 @@ class HomeFragment : Fragment() {
 
         binding.swipeToRefresh.setOnRefreshListener {
             binding.alfaRateCard.rate.text = getString(R.string.updateMessage)
+            binding.alfaRateCard.rate.setRateComparingState(0F)
             binding.nbrbRateCard.rate.text = getString(R.string.updateMessage)
+            binding.nbrbRateCard.rate.setRateComparingState(0F)
             binding.swipeToRefresh.isRefreshing = false
             getCurrency()
         }
@@ -250,22 +273,56 @@ class HomeFragment : Fragment() {
         return activeNetwork?.isConnectedOrConnecting
     }
 
-    private fun showDatePicker(): DatePickerDialog {
+    private fun getDatePickerDialog(): DatePickerDialog {
         val calendar = Calendar.getInstance()
         return DatePickerDialog(
             requireContext(),
-            { _, pickerYear, monthOfYear, dayOfMonth -> // FIXME implement recycler
-                //binding.testCard.rateCard.visibility = View.VISIBLE
+            { _, pickerYear, monthOfYear, dayOfMonth ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    // TODO through DB
-//                    val nbrbRate = NbrbApi.getUsdRateImpl("$pickerYear-${monthOfYear+1}-$dayOfMonth") //"2020-11-23"
-//                    binding.testCard.rateLabel.text = "Нацбанк на $pickerYear-${monthOfYear+1}-$dayOfMonth"
-//                    binding.testCard.rate.text = nbrbRate?.price.toString()
+                    val nbrbRate =
+                        NbrbApi.getUsdRateImpl("$pickerYear-${monthOfYear + 1}-$dayOfMonth") //"2020-11-23"
+                    nbrbRate?.let {
+                        getDatabase(requireContext()).nbrbHistoryDatabaseDao.insertNbrbHistory(
+                            NbrbHistory(it.price.toString(), it.date)
+                        )
+                    }
                 }
             },
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
             calendar[Calendar.DAY_OF_MONTH]
         )
+    }
+
+    private fun getNewGoalDialog(): AlertDialog {
+        return activity?.let {
+            // Use the Builder class for convenient dialog construction
+            val builder = AlertDialog.Builder(it)
+            val inflater = requireActivity().layoutInflater
+            val dialogBinding = DialogCreateGoalBinding.inflate(inflater, null, false)
+            builder.setView(dialogBinding.root)
+
+            builder.setMessage("Здарова отец")
+                .setPositiveButton(
+                    "ok"
+                ) { dialog, id ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
+                            RatesGoal(
+                                bank = dialogBinding.selectBank.selectedItem.toString(),
+                                trend = if (dialogBinding.selectTrend.selectedItem.toString() == "дороже") 1 else -1,
+                                rate = dialogBinding.goalEdit.editText?.text.toString()
+                            )
+                        )
+                    }
+                }
+                .setNegativeButton(
+                    "cancel"
+                ) { dialog, id ->
+                    // User cancelled the dialog
+                }
+            // Create the AlertDialog object and return it
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

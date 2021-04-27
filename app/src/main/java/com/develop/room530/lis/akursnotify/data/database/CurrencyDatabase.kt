@@ -21,14 +21,16 @@ fun getDatabase(context: Context): CurrencyDatabase {
 }
 
 @Database(
-    entities = [Akurs::class, Nbrbkurs::class],
-    version = 3,
+    entities = [Akurs::class, Nbrbkurs::class, NbrbHistory::class, RatesGoal::class],
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class CurrencyDatabase : RoomDatabase() {
     abstract val akursDatabaseDao: AkursDao
     abstract val nbrbDatabaseDao: NbrbDao
+    abstract val nbrbHistoryDatabaseDao: NbrbHistoryDao
+    abstract val ratesGoalDatabaseDao: RatesGoalsDao
 }
 
 class Converters {

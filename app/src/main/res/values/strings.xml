@@ -32,4 +32,13 @@
     <string name="slider_5_label">15 minutes</string>
     <string name="fab_label">History</string>
     <string name="fab_content_desc" translatable="false">Pick date for view rates history</string>
+
+    <string-array name="bank_array">
+        <item>Нацбанк</item>
+        <item>А-Курс</item>
+    </string-array>
+    <string-array name="trend_array">
+        <item>дороже</item>
+        <item>дешевле</item>
+    </string-array>
 </resources>
