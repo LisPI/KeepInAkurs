@@ -90,11 +90,49 @@ class HomeFragment : Fragment() {
         binding.alfaRateCard.rateLabel.text = getString(R.string.Akurs)
         binding.nbrbRateCard.rateLabel.text = getString(R.string.NB)
 
-        binding.rates.adapter = adapter
-        MockRatesData.liveNbRb.observe(viewLifecycleOwner){
+        binding.goalsCard.rates.adapter = adapter
+        binding.historyCard.rates.adapter = adapter
+        MockRatesData.liveNbRb.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
         MockRatesData.newNbRb2()
+
+        binding.goalsCard.rateCard.setOnClickListener {
+//            binding.goalsCard.rates.animate().setDuration(1000L).alpha(0F).start()
+//
+////            ObjectAnimator.ofInt(it, "bottom", 0).apply {
+////                duration = 1000
+////                start()
+////            }
+            // TODO animate!!!!!!!!!!
+            if (binding.goalsCard.rates.visibility != View.GONE) {
+                binding.goalsCard.rates.visibility = View.GONE
+                binding.goalsCard.delimiter.visibility = View.GONE
+            }
+            else{
+                binding.goalsCard.rates.visibility = View.VISIBLE
+                binding.goalsCard.delimiter.visibility = View.VISIBLE
+            }
+        }
+
+        binding.historyCard.goalsLabel.text = "История курсов (8)"
+        binding.historyCard.rateCard.setOnClickListener {
+            //binding.goalsCard.rates.animate().setDuration(1000L).yBy(0F).start()
+
+//            ObjectAnimator.ofInt(it, "bottom", 0).apply {
+//                duration = 1000
+//                start()
+//            }
+            // TODO animate!!!!!!!!!!
+            if (binding.historyCard.rates.visibility != View.GONE) {
+                binding.historyCard.rates.visibility = View.GONE
+                binding.historyCard.delimiter.visibility = View.GONE
+            }
+            else{
+                binding.historyCard.rates.visibility = View.VISIBLE
+                binding.historyCard.delimiter.visibility = View.VISIBLE
+            }
+        }
 
         binding.button.setOnClickListener {
             val sp = requireContext().getSharedPreferences(
@@ -217,12 +255,12 @@ class HomeFragment : Fragment() {
         return DatePickerDialog(
             requireContext(),
             { _, pickerYear, monthOfYear, dayOfMonth -> // FIXME implement recycler
-                binding.testCard.rateCard.visibility = View.VISIBLE
+                //binding.testCard.rateCard.visibility = View.VISIBLE
                 viewLifecycleOwner.lifecycleScope.launch {
                     // TODO through DB
-                    val nbrbRate = NbrbApi.getUsdRateImpl("$pickerYear-${monthOfYear+1}-$dayOfMonth") //"2020-11-23"
-                    binding.testCard.rateLabel.text = "Нацбанк на $pickerYear-${monthOfYear+1}-$dayOfMonth"
-                    binding.testCard.rate.text = nbrbRate?.price.toString()
+//                    val nbrbRate = NbrbApi.getUsdRateImpl("$pickerYear-${monthOfYear+1}-$dayOfMonth") //"2020-11-23"
+//                    binding.testCard.rateLabel.text = "Нацбанк на $pickerYear-${monthOfYear+1}-$dayOfMonth"
+//                    binding.testCard.rate.text = nbrbRate?.price.toString()
                 }
             },
             calendar[Calendar.YEAR],

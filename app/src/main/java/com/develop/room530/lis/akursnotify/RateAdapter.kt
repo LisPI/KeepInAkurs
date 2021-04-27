@@ -5,20 +5,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.develop.room530.lis.akursnotify.databinding.HolderRateBinding
+import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
 import com.develop.room530.lis.akursnotify.model.AlfaRateModel
 import com.develop.room530.lis.akursnotify.model.NbRbRateModel
 import com.develop.room530.lis.akursnotify.model.RateModel
+import kotlin.random.Random
 
-class RateAdapter() : ListAdapter<RateModel, RateAdapter.ViewHolder>(RatesDiffCallback()) { // FIXME change RateModel to UIRate
-    class ViewHolder(private val binding: HolderRateBinding) : RecyclerView.ViewHolder(binding.root) {
+class RateAdapter : ListAdapter<RateModel, RateAdapter.ViewHolder>(RatesDiffCallback()) { // FIXME change RateModel to UIRate
+    class ViewHolder(private val binding: GoalCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RateModel) {
             with(binding) {
                 rate.text = item.rate.format(4)
                 rateLabel.text = when (item) {
                     is AlfaRateModel -> "А-Курс"
                     is NbRbRateModel -> "Нацбанк"
-                } + " от ${item.dateUI}"
+                }
+                rateTrend.text = if(Random.nextBoolean()) "дешевле" else "дороже"
             }
         }
 
@@ -26,7 +28,7 @@ class RateAdapter() : ListAdapter<RateModel, RateAdapter.ViewHolder>(RatesDiffCa
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = HolderRateBinding.inflate(layoutInflater, parent, false)
+        val binding = GoalCardBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(binding)
     }
 

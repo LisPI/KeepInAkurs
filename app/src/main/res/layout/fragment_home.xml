@@ -4,6 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         tools:context=".HomeFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -11,110 +12,88 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <include
-                    android:id="@+id/alfa_rate_card"
-                    layout="@layout/rate_card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintEnd_toStartOf="@+id/nbrb_rate_card"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            <include
-                    android:id="@+id/nbrb_rate_card"
-                    layout="@layout/rate_card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/alfa_rate_card"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            <include
-                    android:id="@+id/test_card"
-                    layout="@layout/rate_card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:visibility="gone"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintEnd_toEndOf="@+id/alfa_rate_card"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="@+id/alfa_rate_card"
-                    app:layout_constraintTop_toBottomOf="@+id/alfa_rate_card" />
-
-
-            <TextView
-                    android:id="@+id/goals_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Цели"
-                    android:textAppearance="?attr/textAppearanceHeadline5"
-                    app:layout_constraintTop_toBottomOf="@+id/test_card"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-            <View
+            <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintBottom_toTopOf="@id/rates"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rates"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/goals_label"
-                    app:spanCount="2"
-                    tools:itemCount="4"
-                    tools:listitem="@layout/holder_rate" />
+                <include
+                        android:id="@+id/alfa_rate_card"
+                        layout="@layout/rate_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toStartOf="@+id/nbrb_rate_card"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                    android:id="@+id/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="Debug clear"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <include
+                        android:id="@+id/nbrb_rate_card"
+                        layout="@layout/rate_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/alfa_rate_card"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                        android:id="@+id/goals_card"
+                        layout="@layout/goals_history_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:visibility="visible"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toEndOf="@+id/nbrb_rate_card"
+                        app:layout_constraintStart_toStartOf="@+id/alfa_rate_card"
+                        app:layout_constraintTop_toBottomOf="@+id/alfa_rate_card" />
+
+                <include
+                        android:id="@+id/history_card"
+                        layout="@layout/goals_history_card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="visible"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/nbrb_rate_card"
+                        app:layout_constraintStart_toStartOf="@+id/alfa_rate_card"
+                        app:layout_constraintTop_toBottomOf="@+id/goals_card" />
+
+                <Button
+                        android:id="@+id/button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="Debug clear"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
             android:contentDescription="@string/fab_content_desc"
-            android:text="@string/fab_label"
-            android:gravity="center"
+            android:src="@drawable/ic_baseline_add_24"
             />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
