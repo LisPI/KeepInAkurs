@@ -31,6 +31,8 @@ const val KEY_CURRENCYNB = "key_currencyNB"
 const val COMPARING_STATE = "COMPARING_STATE"
 const val COMPARING_STATE_NB = "COMPARING_STATE_NB"
 
+const val FAB_ANIM_DURATION = 500L
+
 class HomeFragment : Fragment() {
 
     private var currency = MutableLiveData<String>()
@@ -98,10 +100,6 @@ class HomeFragment : Fragment() {
 
         binding.goalsCard.rates.adapter = adapter
         binding.historyCard.rates.adapter = historyAdapter
-//        MockRatesData.liveNbRb.observe(viewLifecycleOwner) {
-//            adapter.submitList(it)
-//        }
-//        MockRatesData.newNbRb2()
 
         getDatabase(requireContext()).nbrbHistoryDatabaseDao.getNbrbHistory()
             .observe(viewLifecycleOwner) {
@@ -133,13 +131,6 @@ class HomeFragment : Fragment() {
         }
 
         binding.historyCard.rateCard.setOnClickListener {
-            //binding.goalsCard.rates.animate().setDuration(1000L).yBy(0F).start()
-
-//            ObjectAnimator.ofInt(it, "bottom", 0).apply {
-//                duration = 1000
-//                start()
-//            }
-            // TODO animate!!!!!!!!!!
             if (binding.historyCard.rates.visibility != View.GONE) {
                 binding.historyCard.rates.visibility = View.GONE
                 binding.historyCard.delimiter.visibility = View.GONE
@@ -172,14 +163,28 @@ class HomeFragment : Fragment() {
             })
 
         // TODO youtube example
-        binding.actionA.setOnClickListener {
+        binding.fabHistory.setOnClickListener {
+            closeFabMenu()
+            dialog = getDatePickerDialog()
+            dialog?.show()
+        }
+
+        binding.fabGoal.setOnClickListener {
+            closeFabMenu()
             dialog = getNewGoalDialog()
             dialog?.show()
         }
 
-        binding.actionB.setOnClickListener {
-            dialog = getDatePickerDialog()
-            dialog?.show()
+        binding.floatingActionButton.setOnClickListener {
+            if (binding.box.visibility == View.INVISIBLE) {
+                showFabMenu()
+            } else {
+                closeFabMenu()
+            }
+        }
+
+        binding.box.setOnClickListener {
+            closeFabMenu()
         }
 
         comparingState.observe(
@@ -204,6 +209,26 @@ class HomeFragment : Fragment() {
             comparingState.value = savedInstanceState.getFloat(COMPARING_STATE)
             comparingStateNb.value = savedInstanceState.getFloat(COMPARING_STATE_NB)
         } else getCurrency()
+    }
+
+    private fun showFabMenu() {
+        binding.floatingActionButton.animate().rotation(225F).setDuration(FAB_ANIM_DURATION).start()
+        binding.box.visibility = View.VISIBLE
+
+        binding.fabHistory.animate().setDuration(FAB_ANIM_DURATION).alpha(1F)
+            .translationY(-binding.floatingActionButton.height.toFloat())
+            .start()
+        binding.fabGoal.animate().setDuration(FAB_ANIM_DURATION).alpha(1F)
+            .translationY(-binding.floatingActionButton.height.toFloat() - binding.fabHistory.height.toFloat())
+            .start()
+    }
+
+    private fun closeFabMenu() {
+        binding.box.visibility = View.INVISIBLE
+        binding.floatingActionButton.animate().rotation(0F).setDuration(FAB_ANIM_DURATION).start()
+
+        binding.fabHistory.animate().setDuration(FAB_ANIM_DURATION).translationY(0F).alpha(0F).start()
+        binding.fabGoal.animate().setDuration(FAB_ANIM_DURATION).translationY(0F).alpha(0F).start()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -296,7 +321,6 @@ class HomeFragment : Fragment() {
 
     private fun getNewGoalDialog(): AlertDialog {
         return activity?.let {
-            // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
             val inflater = requireActivity().layoutInflater
             val dialogBinding = DialogCreateGoalBinding.inflate(inflater, null, false)

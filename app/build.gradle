@@ -80,6 +80,4 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0-alpha08"
 
     implementation "androidx.multidex:multidex:2.0.1"
-
-    implementation "com.getbase:floatingactionbutton:1.10.1"
 }
