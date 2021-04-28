@@ -242,6 +242,8 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         Log.d("home", "onDestroyView $this")
+        binding.goalsCard.rates.adapter = null
+        binding.historyCard.rates.adapter = null
         _binding = null
         dialog?.cancel()
         super.onDestroyView()
