@@ -11,11 +11,11 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
+            android:layout_margin="8dp">
 
         <TextView
                 android:id="@+id/goals_label"
@@ -23,26 +23,44 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_padding_size_medium"
                 android:layout_marginTop="@dimen/margin_padding_size_small"
-                android:layout_marginBottom="@dimen/margin_padding_size_small"
                 android:text="Цели (4)"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+                android:id="@+id/goals_card_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_size_small"
+                android:layout_marginEnd="@dimen/margin_padding_size_medium"
+                android:layout_marginBottom="@dimen/margin_padding_size_medium"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_baseline_arrow_up_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
         <View
                 android:id="@+id/delimiter"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@android:color/darker_gray" />
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/margin_padding_size_medium"
+                android:layout_marginEnd="@dimen/margin_padding_size_medium"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintTop_toBottomOf="@id/goals_label"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rates"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/delimiter"
                 tools:itemCount="1"
                 tools:listitem="@layout/goal_card" />
 
-    </LinearLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

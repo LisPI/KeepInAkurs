@@ -1,5 +1,6 @@
 package com.develop.room530.lis.akursnotify.features.home
 
+import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
@@ -95,6 +96,19 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    private fun changeHeightView(view: View, value: Int, startValue: Int = view.measuredHeight) {
+        val valueAnimator =
+            ValueAnimator.ofInt(startValue, startValue + value)
+        valueAnimator.duration = FAB_ANIM_DURATION
+        valueAnimator.addUpdateListener {
+            val animatedValue = valueAnimator.animatedValue as Int
+            val layoutParams = view.layoutParams
+            layoutParams.height = animatedValue
+            view.layoutParams = layoutParams
+        }
+        valueAnimator.start()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("home", "onViewCreated $this")
@@ -115,7 +129,8 @@ class HomeFragment : Fragment() {
                 adapter.submitList(it)
                 binding.goalsCard.goalsLabel.text = "Мои цели (${it.size})"
             }
-
+        var state = 0
+        var h = 0
         binding.goalsCard.rateCard.setOnClickListener {
 //            binding.goalsCard.rates.animate().setDuration(1000L).alpha(0F).start()
 //
@@ -124,22 +139,56 @@ class HomeFragment : Fragment() {
 ////                start()
 ////            }
             // TODO animate!!!!!!!!!!
-            if (binding.goalsCard.rates.visibility != View.GONE) {
-                binding.goalsCard.rates.visibility = View.GONE
-                binding.goalsCard.delimiter.visibility = View.GONE
+
+            if (state != 1) {
+
+                binding.goalsCard.delimiter.animate()
+                    .setDuration(FAB_ANIM_DURATION)
+                    .alpha(0F)
+                    .start()
+
+
+//                val mFade: Fade = Fade(Fade.OUT)
+//                TransitionManager.beginDelayedTransition(binding.goalsCard.rateCard, )
+//                binding.goalsCard.rates.visibility = View.GONE
+                //binding.goalsCard.rateCard.animate().setDuration(FAB_ANIM_DURATION).
+                h = binding.goalsCard.rates.measuredHeight
+                changeHeightView(binding.goalsCard.rates, -binding.goalsCard.rates.measuredHeight)
+                state = 1
+
+                binding.goalsCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_down_24)
+//                ObjectAnimator.ofInt(binding.goalsCard.rateCard, "bottom", 10).apply {
+//                    duration = 1000
+//                    start()
+//                }
+
+                //Handler().postDelayed({binding.goalsCard.rates.visibility = View.GONE}, 1000L)
+                //binding.goalsCard.delimiter.visibility = View.INVISIBLE
             } else {
-                binding.goalsCard.rates.visibility = View.VISIBLE
-                binding.goalsCard.delimiter.visibility = View.VISIBLE
+                //val t = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                //binding.goalsCard.rates.measure(ConstraintLayout.LayoutParams.MATCH_PARENT, t)
+                changeHeightView(binding.goalsCard.rates,  h, 0)
+                state = 0
+
+                binding.goalsCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_up_24)
+
+                binding.goalsCard.delimiter.animate()
+                    .setDuration(FAB_ANIM_DURATION)
+                    .alpha(1F)
+                    .start()
             }
         }
 
         binding.historyCard.rateCard.setOnClickListener {
             if (binding.historyCard.rates.visibility != View.GONE) {
                 binding.historyCard.rates.visibility = View.GONE
-                binding.historyCard.delimiter.visibility = View.GONE
+                binding.historyCard.delimiter.visibility = View.INVISIBLE
+                binding.historyCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_down_24)
+
             } else {
                 binding.historyCard.rates.visibility = View.VISIBLE
                 binding.historyCard.delimiter.visibility = View.VISIBLE
+                binding.historyCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_up_24)
             }
         }
 
@@ -230,7 +279,8 @@ class HomeFragment : Fragment() {
         binding.box.visibility = View.INVISIBLE
         binding.floatingActionButton.animate().rotation(0F).setDuration(FAB_ANIM_DURATION).start()
 
-        binding.fabHistory.animate().setDuration(FAB_ANIM_DURATION).translationY(0F).alpha(0F).start()
+        binding.fabHistory.animate().setDuration(FAB_ANIM_DURATION).translationY(0F).alpha(0F)
+            .start()
         binding.fabGoal.animate().setDuration(FAB_ANIM_DURATION).translationY(0F).alpha(0F).start()
     }
 
