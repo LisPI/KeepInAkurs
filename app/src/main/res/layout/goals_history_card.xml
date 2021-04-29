@@ -36,7 +36,7 @@
                 android:layout_marginEnd="@dimen/margin_padding_size_medium"
                 android:layout_marginBottom="@dimen/margin_padding_size_medium"
                 android:layout_gravity="end"
-                android:src="@drawable/ic_baseline_arrow_up_24"
+                android:src="@drawable/ic_baseline_arrow_down_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -47,13 +47,14 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="@dimen/margin_padding_size_medium"
                 android:layout_marginEnd="@dimen/margin_padding_size_medium"
+                android:alpha="0"
                 android:background="@android:color/darker_gray"
                 app:layout_constraintTop_toBottomOf="@id/goals_label"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rates"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

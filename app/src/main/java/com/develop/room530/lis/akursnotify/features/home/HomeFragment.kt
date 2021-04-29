@@ -1,6 +1,5 @@
 package com.develop.room530.lis.akursnotify.features.home
 
-import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
@@ -15,7 +14,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import com.develop.room530.lis.akursnotify.R
+import com.develop.room530.lis.akursnotify.*
 import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
 import com.develop.room530.lis.akursnotify.data.database.RatesGoal
 import com.develop.room530.lis.akursnotify.data.database.getDatabase
@@ -24,9 +23,7 @@ import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import com.develop.room530.lis.akursnotify.databinding.DialogCreateGoalBinding
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
-import com.develop.room530.lis.akursnotify.format
 import com.develop.room530.lis.akursnotify.model.mapFromDb
-import com.develop.room530.lis.akursnotify.setRateComparingState
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -96,19 +93,6 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun changeHeightView(view: View, value: Int, startValue: Int = view.measuredHeight) {
-        val valueAnimator =
-            ValueAnimator.ofInt(startValue, startValue + value)
-        valueAnimator.duration = FAB_ANIM_DURATION
-        valueAnimator.addUpdateListener {
-            val animatedValue = valueAnimator.animatedValue as Int
-            val layoutParams = view.layoutParams
-            layoutParams.height = animatedValue
-            view.layoutParams = layoutParams
-        }
-        valueAnimator.start()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("home", "onViewCreated $this")
@@ -129,70 +113,25 @@ class HomeFragment : Fragment() {
                 adapter.submitList(it)
                 binding.goalsCard.goalsLabel.text = "Мои цели (${it.size})"
             }
-        var state = 0
-        var h = 0
+
         binding.goalsCard.rateCard.setOnClickListener {
-//            binding.goalsCard.rates.animate().setDuration(1000L).alpha(0F).start()
-//
-////            ObjectAnimator.ofInt(it, "bottom", 0).apply {
-////                duration = 1000
-////                start()
-////            }
-            // TODO animate!!!!!!!!!!
-
-            if (state != 1) {
-
-                binding.goalsCard.delimiter.animate()
-                    .setDuration(FAB_ANIM_DURATION)
-                    .alpha(0F)
-                    .start()
-
-
-//                val mFade: Fade = Fade(Fade.OUT)
-//                TransitionManager.beginDelayedTransition(binding.goalsCard.rateCard, )
-//                binding.goalsCard.rates.visibility = View.GONE
-                //binding.goalsCard.rateCard.animate().setDuration(FAB_ANIM_DURATION).
-                h = binding.goalsCard.rates.measuredHeight
-                changeHeightView(binding.goalsCard.rates, -binding.goalsCard.rates.measuredHeight)
-                state = 1
-
-                binding.goalsCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_down_24)
-//                ObjectAnimator.ofInt(binding.goalsCard.rateCard, "bottom", 10).apply {
-//                    duration = 1000
-//                    start()
-//                }
-
-                //Handler().postDelayed({binding.goalsCard.rates.visibility = View.GONE}, 1000L)
-                //binding.goalsCard.delimiter.visibility = View.INVISIBLE
+            if (binding.goalsCard.delimiter.alpha > 0.5F) {
+                binding.goalsCard.animatedCollapse(FAB_ANIM_DURATION)
             } else {
-                //val t = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                //binding.goalsCard.rates.measure(ConstraintLayout.LayoutParams.MATCH_PARENT, t)
-                changeHeightView(binding.goalsCard.rates,  h, 0)
-                state = 0
-
-                binding.goalsCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_up_24)
-
-                binding.goalsCard.delimiter.animate()
-                    .setDuration(FAB_ANIM_DURATION)
-                    .alpha(1F)
-                    .start()
+                binding.goalsCard.animatedExpand(FAB_ANIM_DURATION)
             }
         }
 
         binding.historyCard.rateCard.setOnClickListener {
-            if (binding.historyCard.rates.visibility != View.GONE) {
-                binding.historyCard.rates.visibility = View.GONE
-                binding.historyCard.delimiter.visibility = View.INVISIBLE
-                binding.historyCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_down_24)
-
+            if (binding.historyCard.delimiter.alpha > 0.5F) {
+                binding.historyCard.animatedCollapse(FAB_ANIM_DURATION)
             } else {
-                binding.historyCard.rates.visibility = View.VISIBLE
-                binding.historyCard.delimiter.visibility = View.VISIBLE
-                binding.historyCard.goalsCardStatus.setImageResource(R.drawable.ic_baseline_arrow_up_24)
+                binding.historyCard.animatedExpand(FAB_ANIM_DURATION)
             }
         }
 
-        binding.button.setOnClickListener {
+        // FIXME easter egg
+        binding.alfaRateCard.rateCard.setOnLongClickListener {
             val sp = requireContext().getSharedPreferences(
                 this.getString(R.string.app_pref),
                 Context.MODE_PRIVATE
@@ -201,6 +140,7 @@ class HomeFragment : Fragment() {
                 putBoolean(requireContext().getString(R.string.onboarding_complete), false)
                 apply()
             }
+            true
         }
 
         currency.observe(
@@ -383,7 +323,7 @@ class HomeFragment : Fragment() {
 
             builder.setMessage("Здарова отец")
                 .setPositiveButton(
-                    "ok"
+                    "OK"
                 ) { dialog, id ->
                     viewLifecycleOwner.lifecycleScope.launch {
                         getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
@@ -396,11 +336,9 @@ class HomeFragment : Fragment() {
                     }
                 }
                 .setNegativeButton(
-                    "cancel"
+                    getString(R.string.cancel_label)
                 ) { dialog, id ->
-                    // User cancelled the dialog
                 }
-            // Create the AlertDialog object and return it
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

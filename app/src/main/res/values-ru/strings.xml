@@ -28,4 +28,5 @@
     <string name="slider_4_label">1 час</string>
     <string name="slider_5_label">15 минут</string>
     <string name="fab_label">История</string>
+    <string name="cancel_label">Отмена</string>
 </resources>

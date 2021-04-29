@@ -1,5 +1,6 @@
 package com.develop.room530.lis.akursnotify
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import androidx.work.*
@@ -20,6 +21,7 @@ class AkursApp : MultiDexApplication() {
         super.onCreate()
         delayedInit()
         changeThemeIfNeeded()
+        Log.d("app", "onCreate")
     }
 
     private fun delayedInit() {
@@ -30,7 +32,8 @@ class AkursApp : MultiDexApplication() {
 
     private fun changeThemeIfNeeded() {
         runBlocking {
-            val isNightTheme = dataStore.data.first()[PrefsKeys.NIGHT_THEME] ?: DEFAULT_THEME_SETTINGS
+            val isNightTheme =
+                dataStore.data.first()[PrefsKeys.NIGHT_THEME] ?: DEFAULT_THEME_SETTINGS
             if (isNightTheme)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else
@@ -39,12 +42,6 @@ class AkursApp : MultiDexApplication() {
     }
 
     private suspend fun setupRecurringWork() {
-
-        // FIXME nice try)
-//        val oldWork = WorkManager.getInstance(applicationContext)
-//            .getWorkInfosForUniqueWork(MyWorker.WORK_NAME).get()
-//        if (oldWork.size > 0 && oldWork[0].state == WorkInfo.State.CANCELLED)
-//            return
 
         val currentWorkInterval = dataStore.data.first()[PrefsKeys.WORK_INTERVAL]
         if (currentWorkInterval == 0F)
