@@ -29,4 +29,6 @@
     <string name="slider_5_label">15 минут</string>
     <string name="fab_label">История</string>
     <string name="cancel_label">Отмена</string>
+    <string name="rates_history_label">История курсов (%1$d)</string>
+    <string name="rates_goals_label">Мои цели (%1$d)</string>
 </resources>

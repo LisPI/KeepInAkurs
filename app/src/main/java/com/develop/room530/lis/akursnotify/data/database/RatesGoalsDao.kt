@@ -16,4 +16,7 @@ interface RatesGoalsDao {
 
     @Query("DELETE FROM ratesgoal")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM ratesgoal where id = :goalId")
+    suspend fun deleteGoal(goalId: Int)
 }

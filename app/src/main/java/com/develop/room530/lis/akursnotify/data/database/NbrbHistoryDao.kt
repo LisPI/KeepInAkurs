@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import java.util.*
 
 @Dao
 interface NbrbHistoryDao {
@@ -16,4 +17,7 @@ interface NbrbHistoryDao {
 
     @Query("DELETE FROM nbrbhistory")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM nbrbhistory where date = :date")
+    suspend fun deleteHistoryItem(date: Date)
 }

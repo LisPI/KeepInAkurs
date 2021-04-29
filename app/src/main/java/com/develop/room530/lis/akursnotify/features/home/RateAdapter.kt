@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.develop.room530.lis.akursnotify.data.database.RatesGoal
 import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
 
-class RateAdapter : ListAdapter<RatesGoal, RateAdapter.ViewHolder>(RatesDiffCallback()) { // FIXME change RateModel to UIRate
+class RateAdapter(private val onClick: (item: RatesGoal) -> Unit) :
+    ListAdapter<RatesGoal, RateAdapter.ViewHolder>(RatesDiffCallback()) { // FIXME change RateModel to UIRate
     class ViewHolder(private val binding: GoalCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RatesGoal) {
             with(binding) {
                 rate.text = item.rate.format(4)
                 rateLabel.text = item.bank
-                rateTrend.text = if(item.trend < 0) "дешевле" else "дороже"
+                rateTrend.text = if (item.trend < 0) "дешевле" else "дороже"
             }
         }
     }
@@ -22,7 +23,9 @@ class RateAdapter : ListAdapter<RatesGoal, RateAdapter.ViewHolder>(RatesDiffCall
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = GoalCardBinding.inflate(layoutInflater, parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding).apply {
+            itemView.setOnClickListener { onClick.invoke(getItem(adapterPosition)) }
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

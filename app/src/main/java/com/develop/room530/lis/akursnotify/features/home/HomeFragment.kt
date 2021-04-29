@@ -46,8 +46,16 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    private val adapter = RateAdapter()
-    private val historyAdapter = HistoryRatesAdapter()
+    private val adapter = RateAdapter {
+        viewLifecycleOwner.lifecycleScope.launch {
+            getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)  // FIXME collapse card after delete all items
+        }
+    }
+    private val historyAdapter = HistoryRatesAdapter {
+        viewLifecycleOwner.lifecycleScope.launch {
+            getDatabase(requireContext()).nbrbHistoryDatabaseDao.deleteHistoryItem(it.date)
+        }
+    }
 
     private var dialog: Dialog? = null
 
@@ -107,29 +115,35 @@ class HomeFragment : Fragment() {
         getDatabase(requireContext()).nbrbHistoryDatabaseDao.getNbrbHistory()
             .observe(viewLifecycleOwner) {
                 historyAdapter.submitList(it)
-                binding.historyCard.goalsLabel.text = "История курсов (${it.size})"
+                binding.historyCard.goalsLabel.text = getString(R.string.rates_history_label, it.size)
+                if (it.isEmpty())
+                    binding.historyCard.animatedCollapse(FAB_ANIM_DURATION)
             }
 
         getDatabase(requireContext()).ratesGoalDatabaseDao.getRatesGoals()
             .observe(viewLifecycleOwner) {
                 adapter.submitList(it)
-                binding.goalsCard.goalsLabel.text = "Мои цели (${it.size})"
+                binding.goalsCard.goalsLabel.text = getString(R.string.rates_goals_label, it.size)
+                if (it.isEmpty())
+                    binding.goalsCard.animatedCollapse(FAB_ANIM_DURATION)
             }
 
         binding.goalsCard.rateCard.setOnClickListener {
-            if (binding.goalsCard.delimiter.alpha > 0.5F) {
-                binding.goalsCard.animatedCollapse(FAB_ANIM_DURATION)
-            } else {
-                binding.goalsCard.animatedExpand(FAB_ANIM_DURATION)
-            }
+            if (adapter.itemCount != 0)
+                if (binding.goalsCard.delimiter.alpha > 0.5F) {
+                    binding.goalsCard.animatedCollapse(FAB_ANIM_DURATION)
+                } else {
+                    binding.goalsCard.animatedExpand(FAB_ANIM_DURATION)
+                }
         }
 
         binding.historyCard.rateCard.setOnClickListener {
-            if (binding.historyCard.delimiter.alpha > 0.5F) {
-                binding.historyCard.animatedCollapse(FAB_ANIM_DURATION)
-            } else {
-                binding.historyCard.animatedExpand(FAB_ANIM_DURATION)
-            }
+            if (historyAdapter.itemCount != 0)
+                if (binding.historyCard.delimiter.alpha > 0.5F) {
+                    binding.historyCard.animatedCollapse(FAB_ANIM_DURATION)
+                } else {
+                    binding.historyCard.animatedExpand(FAB_ANIM_DURATION)
+                }
         }
 
         // FIXME easter egg
