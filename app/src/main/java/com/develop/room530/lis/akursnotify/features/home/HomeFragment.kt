@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.features.home
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import com.develop.room530.lis.akursnotify.R
 import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
 import com.develop.room530.lis.akursnotify.data.database.RatesGoal
 import com.develop.room530.lis.akursnotify.data.database.getDatabase
@@ -22,7 +23,9 @@ import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import com.develop.room530.lis.akursnotify.databinding.DialogCreateGoalBinding
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
+import com.develop.room530.lis.akursnotify.format
 import com.develop.room530.lis.akursnotify.model.mapFromDb
+import com.develop.room530.lis.akursnotify.setRateComparingState
 import kotlinx.coroutines.*
 import java.util.*
 

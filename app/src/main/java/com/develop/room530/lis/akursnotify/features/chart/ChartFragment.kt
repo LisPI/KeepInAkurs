@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.features.chart
 
 import android.graphics.Color
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.develop.room530.lis.akursnotify.databinding.FragmentChartBinding
+import com.develop.room530.lis.akursnotify.getDateDDMMFormatFromLong
 import com.develop.room530.lis.akursnotify.model.AlfaRateModel
 import com.develop.room530.lis.akursnotify.model.NbRbRateModel
 import com.develop.room530.lis.akursnotify.model.RateModel

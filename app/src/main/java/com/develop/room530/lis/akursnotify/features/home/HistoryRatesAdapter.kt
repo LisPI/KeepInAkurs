@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.features.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,8 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
 import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
+import com.develop.room530.lis.akursnotify.getDateDDMMFormat
 
-class HistoryRatesAdapter : ListAdapter<NbrbHistory, HistoryRatesAdapter.ViewHolder>(RatesHistoryDiffCallback()) { // FIXME change RateModel to UIRate
+class HistoryRatesAdapter : ListAdapter<NbrbHistory, HistoryRatesAdapter.ViewHolder>(
+    RatesHistoryDiffCallback()
+) { // FIXME change RateModel to UIRate
     class ViewHolder(private val binding: GoalCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: NbrbHistory) {
             with(binding) {

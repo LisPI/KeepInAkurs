@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ChartFragment">
+        tools:context=".features.chart.ChartFragment">
 
     <HorizontalScrollView
             android:layout_width="match_parent"

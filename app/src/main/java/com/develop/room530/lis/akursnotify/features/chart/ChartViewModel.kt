@@ -1,10 +1,11 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.features.chart
 
 import android.app.Application
 import androidx.lifecycle.*
 import com.develop.room530.lis.akursnotify.data.database.CurrencyDatabase
 import com.develop.room530.lis.akursnotify.data.database.RateEntity
 import com.develop.room530.lis.akursnotify.data.database.getDatabase
+import com.develop.room530.lis.akursnotify.getDateWithOffset
 import com.develop.room530.lis.akursnotify.model.mapFromDb
 
 class ChartViewModel(application: Application) : AndroidViewModel(application) {

@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.features.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

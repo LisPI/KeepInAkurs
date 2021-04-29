@@ -1,4 +1,4 @@
-package com.develop.room530.lis.akursnotify
+package com.develop.room530.lis.akursnotify.features.settings
 
 import android.content.Context
 import android.os.Bundle
@@ -14,6 +14,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.work.*
+import com.develop.room530.lis.akursnotify.MyWorker
+import com.develop.room530.lis.akursnotify.R
 import com.google.android.material.slider.Slider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout

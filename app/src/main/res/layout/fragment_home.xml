@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        tools:context=".HomeFragment">
+        tools:context=".features.home.HomeFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_to_refresh"
@@ -126,7 +126,7 @@
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/fab_content_desc"
             android:src="@drawable/ic_baseline_add_24"
-            app:layout_behavior=".FABBehavior"
+            app:layout_behavior=".features.home.FABBehavior"
             />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

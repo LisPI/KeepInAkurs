@@ -14,6 +14,8 @@ import androidx.work.WorkerParameters
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
+import com.develop.room530.lis.akursnotify.features.settings.PrefsKeys
+import com.develop.room530.lis.akursnotify.features.settings.dataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 

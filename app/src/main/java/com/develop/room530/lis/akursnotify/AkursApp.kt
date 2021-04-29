@@ -3,6 +3,9 @@ package com.develop.room530.lis.akursnotify
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import androidx.work.*
+import com.develop.room530.lis.akursnotify.features.settings.DEFAULT_THEME_SETTINGS
+import com.develop.room530.lis.akursnotify.features.settings.PrefsKeys
+import com.develop.room530.lis.akursnotify.features.settings.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

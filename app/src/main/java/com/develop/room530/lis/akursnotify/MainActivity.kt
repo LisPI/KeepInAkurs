@@ -6,6 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commitNow
+import com.develop.room530.lis.akursnotify.features.chart.ChartFragment
+import com.develop.room530.lis.akursnotify.features.home.HomeFragment
+import com.develop.room530.lis.akursnotify.features.settings.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 private const val HOME = "home"
