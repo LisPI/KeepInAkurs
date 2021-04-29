@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.develop.room530.lis.akursnotify.databinding.FragmentChartBinding
-import com.develop.room530.lis.akursnotify.getDateDDMMFormatFromLong
+import com.develop.room530.lis.akursnotify.getDateHHMMDDMMFormatFromLong
 import com.develop.room530.lis.akursnotify.model.AlfaRateModel
 import com.develop.room530.lis.akursnotify.model.NbRbRateModel
 import com.develop.room530.lis.akursnotify.model.RateModel
@@ -148,7 +148,7 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
 
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
-                return getDateDDMMFormatFromLong(value.toLong() * 60000)
+                return getDateHHMMDDMMFormatFromLong(value.toLong() * 60000)
             }
         }
         xAxis.position = XAxis.XAxisPosition.BOTTOM

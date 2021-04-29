@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -311,7 +313,10 @@ class HomeFragment : Fragment() {
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
             calendar[Calendar.DAY_OF_MONTH]
-        )
+        ).apply {
+            calendar.set(2000, 0, 1)
+            datePicker.minDate = calendar.timeInMillis
+        }
     }
 
     private fun getNewGoalDialog(): AlertDialog {
@@ -339,7 +344,15 @@ class HomeFragment : Fragment() {
                     getString(R.string.cancel_label)
                 ) { dialog, id ->
                 }
-            builder.create()
+            builder.create().apply {
+                setOnShowListener {
+                    getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = false
+                }
+                dialogBinding.goalEdit.editText?.doAfterTextChanged { text ->
+                    getButton(DialogInterface.BUTTON_POSITIVE).isEnabled =
+                        text != null && text.length in 1..6
+                }
+            }
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

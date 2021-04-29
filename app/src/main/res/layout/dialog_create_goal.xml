@@ -28,8 +28,8 @@
             android:hint="@string/notification_goal_hint"
             app:counterEnabled="true"
             app:counterMaxLength="6"
-            app:endIconDrawable="@drawable/ic_baseline_check_circle_outline_24"
-            app:endIconMode="custom">
+            app:errorEnabled="true"
+            app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

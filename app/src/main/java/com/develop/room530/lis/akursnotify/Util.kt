@@ -32,12 +32,17 @@ fun getDateDDMMFormat(date: Date): String {
     return sdf.format(date)
 }
 
+fun getDateDDMMYYFormat(date: Date): String {
+    val sdf = SimpleDateFormat("dd.MM.yyyy", Locale("ru"))
+    return sdf.format(date)
+}
+
 fun getDateHHMMDDMMFormat(date: Date): String {
     val sdf = SimpleDateFormat("HH:mm dd.MM", Locale("ru"))
     return sdf.format(date)
 }
 
-fun getDateDDMMFormatFromLong(millis: Long): String {
+fun getDateHHMMDDMMFormatFromLong(millis: Long): String {
     val sdf = SimpleDateFormat("HH:mm dd.MM", Locale("ru"))
     return sdf.format(Date(millis))
 }

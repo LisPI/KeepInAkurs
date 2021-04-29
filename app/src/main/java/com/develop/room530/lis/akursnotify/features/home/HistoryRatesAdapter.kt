@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
 import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
-import com.develop.room530.lis.akursnotify.getDateDDMMFormat
+import com.develop.room530.lis.akursnotify.getDateDDMMYYFormat
 
 class HistoryRatesAdapter : ListAdapter<NbrbHistory, HistoryRatesAdapter.ViewHolder>(
     RatesHistoryDiffCallback()
@@ -16,8 +16,8 @@ class HistoryRatesAdapter : ListAdapter<NbrbHistory, HistoryRatesAdapter.ViewHol
         fun bind(item: NbrbHistory) {
             with(binding) {
                 rate.text = item.rate.format(4)
-                rateLabel.text = "Нацбанк на ${getDateDDMMFormat(item.date)}"
-                //rateTrend.text = getDateDDMMFormat(item.date)
+                rateLabel.text = "Нацбанк"
+                rateTrend.text = "от ${getDateDDMMYYFormat(item.date)}"//getDateDDMMFormat(item.date)
             }
         }
     }
