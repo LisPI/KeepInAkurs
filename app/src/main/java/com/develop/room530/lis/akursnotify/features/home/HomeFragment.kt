@@ -115,7 +115,8 @@ class HomeFragment : Fragment() {
         getDatabase(requireContext()).nbrbHistoryDatabaseDao.getNbrbHistory()
             .observe(viewLifecycleOwner) {
                 historyAdapter.submitList(it)
-                binding.historyCard.goalsLabel.text = getString(R.string.rates_history_label, it.size)
+                binding.historyCard.goalsLabel.text =
+                    getString(R.string.rates_history_label, it.size)
                 if (it.isEmpty())
                     binding.historyCard.animatedCollapse(FAB_ANIM_DURATION)
             }
@@ -340,15 +341,21 @@ class HomeFragment : Fragment() {
             val dialogBinding = DialogCreateGoalBinding.inflate(inflater, null, false)
             builder.setView(dialogBinding.root)
 
-            builder.setMessage("Здарова отец")
+            builder
                 .setPositiveButton(
                     "OK"
                 ) { dialog, id ->
                     viewLifecycleOwner.lifecycleScope.launch {
+                        // проверить перекрытие текущих целей
+                        // изменить работу воркера - это в воркере
+                        // изменять подсказку в поле ввода числа
+                        // удалить из настроек эдитор - удалить сооответствующую префу
+                        // сделать в настройках переход на системные для отключения пушей
                         getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
                             RatesGoal(
                                 bank = dialogBinding.selectBank.selectedItem.toString(),
-                                trend = if (dialogBinding.selectTrend.selectedItem.toString() == "дороже") 1 else -1,
+                                trend = if (dialogBinding.selectTrend.selectedItem.toString() == getString(R.string.expensive_label)) 1
+                                            else -1,
                                 rate = dialogBinding.goalEdit.editText?.text.toString()
                             )
                         )

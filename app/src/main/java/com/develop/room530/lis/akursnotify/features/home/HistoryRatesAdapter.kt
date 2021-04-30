@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.develop.room530.lis.akursnotify.R
 import com.develop.room530.lis.akursnotify.data.database.NbrbHistory
 import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
 import com.develop.room530.lis.akursnotify.getDateDDMMYYFormat
@@ -16,8 +17,8 @@ class HistoryRatesAdapter(private val onClick: (item: NbrbHistory) -> Unit) : Li
         fun bind(item: NbrbHistory) {
             with(binding) {
                 rate.text = item.rate.format(4)
-                rateLabel.text = "Нацбанк"
-                rateTrend.text = "от ${getDateDDMMYYFormat(item.date)}"//getDateDDMMFormat(item.date)
+                rateLabel.text = rateLabel.context.getString(R.string.NB)
+                rateTrend.text = rateTrend.context.getString(R.string.rates_by_date, getDateDDMMYYFormat(item.date))
             }
         }
     }

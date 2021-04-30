@@ -14,7 +14,7 @@
     <string name="chip_label_three">1 месяц</string>
     <string name="chip_label_four">свободный выбор</string>
     <string name="no_data_label">Нет данных</string>
-    <string name="notification_switch_label">Уведомления</string>
+    <string name="notification_switch_label">Уведомлять о целях</string>
     <string name="notification_goal_hint">Уведомлять при курсе меньше</string>
     <string name="theme_switch_label">Ночная тема</string>
     <string name="no_internet_message">Пропал интернет(</string>
@@ -31,4 +31,8 @@
     <string name="cancel_label">Отмена</string>
     <string name="rates_history_label">История курсов (%1$d)</string>
     <string name="rates_goals_label">Мои цели (%1$d)</string>
+    <string name="rates_by_date">от %1$s</string>
+    <string name="cheap_label">дешевле</string>
+    <string name="expensive_label">дороже</string>
+    <string name="new_goal_label">Новая цель</string>
 </resources>

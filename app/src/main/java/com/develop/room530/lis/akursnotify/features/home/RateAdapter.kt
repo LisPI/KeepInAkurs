@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.develop.room530.lis.akursnotify.R
 import com.develop.room530.lis.akursnotify.data.database.RatesGoal
 import com.develop.room530.lis.akursnotify.databinding.GoalCardBinding
 
@@ -15,7 +16,7 @@ class RateAdapter(private val onClick: (item: RatesGoal) -> Unit) :
             with(binding) {
                 rate.text = item.rate.format(4)
                 rateLabel.text = item.bank
-                rateTrend.text = if (item.trend < 0) "дешевле" else "дороже"
+                rateTrend.text = if (item.trend < 0) binding.rateTrend.context.getString(R.string.cheap_label) else binding.rateTrend.context.getString(R.string.expensive_label)
             }
         }
     }
