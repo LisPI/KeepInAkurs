@@ -11,13 +11,18 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.develop.room530.lis.akursnotify.data.database.RatesGoal
+import com.develop.room530.lis.akursnotify.data.database.getDatabase
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import com.develop.room530.lis.akursnotify.features.settings.PrefsKeys
 import com.develop.room530.lis.akursnotify.features.settings.dataStore
+import com.develop.room530.lis.akursnotify.model.mapFromDb
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class MyWorker(private val appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -33,20 +38,60 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
 
         saveRatesInDb(appContext, akursRates, nbrbRates)
 
-        Log.d("nbrb currency", nbrbRates.lastOrNull()?.price.toString())
+        val lastAkursRate = withContext(Dispatchers.IO) {
+            getDatabase(appContext).akursDatabaseDao.getLastAkurs(1).map { mapFromDb(it) }
+        }.firstOrNull()
+
+        val lastNbrbRate = withContext(Dispatchers.IO) {
+            getDatabase(appContext).nbrbDatabaseDao.getLastNbrbKurs(1).map { mapFromDb(it) }
+        }.firstOrNull()
+
         val pushEnabled = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH] }
         if (pushEnabled == true) {
-            val pushRate = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH_RATE] }
-            val rate = nbrbRates.lastOrNull()?.price
-            if (pushRate != null && rate != null && pushRate > rate)
-                sendNotification(rate.toString())
+
+            val goals = withContext(Dispatchers.IO) {
+                getDatabase(appContext).ratesGoalDatabaseDao.getRatesGoalsOneTime()
+            }
+
+            Log.d("worker for goals", "$goals")
+
+            fun StringBuilder.appendIfNeeded(goal: RatesGoal, rate: Float, trendString: String) {
+                if ((-goal.rate.toFloat() + rate) * goal.trend > 0)
+                    appendLine(
+                        appContext.getString(
+                            R.string.goal_reached,
+                            goal.bank,
+                            trendString,
+                            goal.rate
+                        )
+                    )
+            }
+
+            val notificationText = StringBuilder()
+            goals.forEach { goal ->
+                val trendString =
+                    if (goal.trend == -1) appContext.getString(R.string.cheap_label)
+                    else appContext.getString(R.string.expensive_label)
+
+                if (goal.bank == appContext.getString(R.string.NB)) {
+                    lastNbrbRate?.let {
+                        notificationText.appendIfNeeded(goal, it.rate, trendString)
+                    }
+                }
+                if (goal.bank == appContext.getString(R.string.Akurs)) {
+                    lastAkursRate?.let {
+                        notificationText.appendIfNeeded(goal, it.rate, trendString)
+                    }
+                }
+            }
+            if (notificationText.isNotEmpty())
+                sendNotification(notificationText.toString())
         }
-        Log.d("push enabled", pushEnabled.toString())
 
         return Result.success()
     }
 
-    private fun sendNotification(rate: String) {
+    private fun sendNotification(notificationText: String) {
         val intent = Intent(appContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -60,7 +105,10 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
         val notificationBuilder = NotificationCompat.Builder(appContext, channelId)
             .setSmallIcon(R.drawable.ic_baseline_attach_money_24)
             .setContentTitle(appContext.getString(R.string.interestRate))
-            .setContentText(rate)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(notificationText)
+            )
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)

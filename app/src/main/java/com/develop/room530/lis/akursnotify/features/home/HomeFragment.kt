@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -48,7 +49,7 @@ class HomeFragment : Fragment() {
 
     private val adapter = RateAdapter {
         viewLifecycleOwner.lifecycleScope.launch {
-            getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)  // FIXME collapse card after delete all items
+            getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)
         }
     }
     private val historyAdapter = HistoryRatesAdapter {
@@ -346,16 +347,16 @@ class HomeFragment : Fragment() {
                     "OK"
                 ) { dialog, id ->
                     viewLifecycleOwner.lifecycleScope.launch {
-                        // проверить перекрытие текущих целей
-                        // изменить работу воркера - это в воркере
-                        // изменять подсказку в поле ввода числа
-                        // удалить из настроек эдитор - удалить сооответствующую префу
+                        // проверить перекрытие текущих целей показать снэк "уже есть похожая цель - заменить?"
                         // сделать в настройках переход на системные для отключения пушей
                         getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
                             RatesGoal(
                                 bank = dialogBinding.selectBank.selectedItem.toString(),
-                                trend = if (dialogBinding.selectTrend.selectedItem.toString() == getString(R.string.expensive_label)) 1
-                                            else -1,
+                                trend = if (dialogBinding.selectTrend.selectedItem.toString() == getString(
+                                        R.string.expensive_label
+                                    )
+                                ) 1
+                                else -1,
                                 rate = dialogBinding.goalEdit.editText?.text.toString()
                             )
                         )
@@ -373,6 +374,29 @@ class HomeFragment : Fragment() {
                     getButton(DialogInterface.BUTTON_POSITIVE).isEnabled =
                         text != null && text.length in 1..6
                 }
+                dialogBinding.selectTrend.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            dialogBinding.goalEdit.hint = if (parent?.getItemAtPosition(position)
+                                    .toString() == getString(R.string.expensive_label)
+                            ) getString(
+                                R.string.notification_goal_hint,
+                                getString(R.string.expensive_label)
+                            ) else
+                                getString(
+                                    R.string.notification_goal_hint,
+                                    getString(R.string.cheap_label)
+                                )
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                        }
+                    }
             }
         } ?: throw IllegalStateException("Activity cannot be null")
     }

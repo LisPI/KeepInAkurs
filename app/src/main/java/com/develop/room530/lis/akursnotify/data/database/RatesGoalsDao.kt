@@ -11,6 +11,9 @@ interface RatesGoalsDao {
     @Query("select * from ratesgoal")
     fun getRatesGoals(): LiveData<List<RatesGoal>>
 
+    @Query("select * from ratesgoal")
+    fun getRatesGoalsOneTime(): List<RatesGoal>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRatesGoal(vararg ratesGoal: RatesGoal)
 

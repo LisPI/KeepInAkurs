@@ -66,31 +66,6 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline_start_16dp"
                 app:layout_constraintTop_toBottomOf="@+id/frequency_slider" />
 
-        <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/push_goals"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="@string/notification_goal_hint"
-                app:counterEnabled="true"
-                app:counterMaxLength="6"
-                app:endIconDrawable="@drawable/ic_baseline_check_circle_outline_24"
-                app:endIconMode="custom"
-                app:layout_constraintEnd_toEndOf="@+id/guideline_end_16dp"
-                app:layout_constraintStart_toStartOf="@+id/guideline_start_16dp"
-                app:layout_constraintTop_toBottomOf="@+id/switch_notification">
-
-            <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
         <View
                 android:id="@+id/view"
                 android:layout_width="match_parent"
@@ -99,7 +74,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@+id/push_goals" />
+                app:layout_constraintTop_toBottomOf="@+id/switch_notification" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_night_theme"
