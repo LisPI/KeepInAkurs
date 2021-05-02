@@ -17,7 +17,7 @@
     <string name="chip_label_four">custom</string>
     <string name="no_data_label">No data</string>
     <string name="notification_switch_label">Notifications for goals</string>
-    <string name="notification_goal_hint">Notify when rate %1$s than</string>
+    <string name="notification_goal_hint">Notify when rate %1$s</string>
     <string name="goal_reached">Goal - %1$s %2$s %3$s reached!</string>
     <string name="theme_switch_label">Night theme</string>
     <string name="card_label" translatable="false">card label</string>

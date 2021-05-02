@@ -34,15 +34,11 @@ object PrefsKeys {
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
-    private lateinit var pushSwitch: SwitchMaterial
-    private lateinit var themeSwitch: SwitchMaterial
-    private lateinit var frequencySlider: Slider
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pushSwitch = view.findViewById(R.id.switch_notification)
-        themeSwitch = view.findViewById(R.id.switch_night_theme)
-        frequencySlider = view.findViewById(R.id.frequency_slider)
+        val pushSwitch: SwitchMaterial = view.findViewById(R.id.switch_notification)
+        val themeSwitch: SwitchMaterial = view.findViewById(R.id.switch_night_theme)
+        val frequencySlider: Slider = view.findViewById(R.id.frequency_slider)
 
         lifecycleScope.launchWhenCreated {
             pushSwitch.isChecked =

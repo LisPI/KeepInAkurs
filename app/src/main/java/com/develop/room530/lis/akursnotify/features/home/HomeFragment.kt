@@ -194,7 +194,6 @@ class HomeFragment : Fragment() {
                 binding.nbrbRateCard.rate.text = newValue
             })
 
-        // TODO youtube example
         binding.fabHistory.setOnClickListener {
             closeFabMenu()
             dialog = getDatePickerDialog()
@@ -389,7 +388,7 @@ class HomeFragment : Fragment() {
                             getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
                                 RatesGoal(
                                     id = goalWithTheSameType.id,
-                                    bank = dialogBinding.selectBank.selectedItem.toString(),
+                                    bank = dialogBinding.selectBank.selectedItem.toString(),  // FIXME don't save localization string!!!!!!!!!!!!!!!
                                     trend = trendInt,
                                     rate = dialogBinding.goalEdit.editText?.text.toString()
                                 )
