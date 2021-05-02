@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
 
     private val adapter = RateAdapter {
         AlertDialog.Builder(requireContext())
-            .setMessage(getString(R.string.delete_item_dialog_label))
+            .setMessage(getString(R.string.delete_goal_item_dialog_label))
             .setPositiveButton(getString(R.string.ok_dialog_label)) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)
@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
     }
     private val historyAdapter = HistoryRatesAdapter {
         AlertDialog.Builder(requireContext())
-            .setMessage(getString(R.string.delete_item_dialog_label))
+            .setMessage(getString(R.string.delete_history_item_dialog_label))
             .setPositiveButton(getString(R.string.ok_dialog_label)) { _, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     getDatabase(requireContext()).nbrbHistoryDatabaseDao.deleteHistoryItem(it.date)

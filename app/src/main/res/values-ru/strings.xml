@@ -37,6 +37,7 @@
     <string name="expensive_label">дороже</string>
     <string name="new_goal_label">Новая цель</string>
     <string name="replace_goal">Была уточнена текущая цель</string>
-    <string name="delete_item_dialog_label">Удалить этот элемент?</string>
+    <string name="delete_goal_item_dialog_label">Удалить эту цель?</string>
+    <string name="delete_history_item_dialog_label">Удалить этот курс из истории?</string>
     <string name="ok_dialog_label">ОК</string>
 </resources>

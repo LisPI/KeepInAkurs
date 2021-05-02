@@ -41,7 +41,8 @@
     <string name="expensive_label">more than</string>
     <string name="new_goal_label">New goal</string>
     <string name="replace_goal">Current goal was adjusted</string>
-    <string name="delete_item_dialog_label">Delete this item?</string>
+    <string name="delete_goal_item_dialog_label">Delete this goal?</string>
+    <string name="delete_history_item_dialog_label">Delete this rate from history?</string>
     <string name="ok_dialog_label">OK</string>
 
     <string-array name="bank_array">

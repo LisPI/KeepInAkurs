@@ -23,7 +23,10 @@ fun getDatabase(context: Context): CurrencyDatabase {
 @Database(
     entities = [Akurs::class, Nbrbkurs::class, NbrbHistory::class, RatesGoal::class],
     version = 5,
-    exportSchema = false
+    exportSchema = true,
+//    autoMigrations = [
+//        AutoMigration(from = 5, to = 6)
+//    ]
 )
 @TypeConverters(Converters::class)
 abstract class CurrencyDatabase : RoomDatabase() {
