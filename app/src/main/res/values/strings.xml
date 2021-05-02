@@ -33,13 +33,16 @@
     <string name="slider_5_label">15 minutes</string>
     <string name="fab_label">History</string>
     <string name="fab_content_desc" translatable="false">Pick date for view rates history</string>
-    <string name="cancel_label">Cancel</string>
+    <string name="cancel_dialog_label">Cancel</string>
     <string name="rates_history_label">Rates history (%1$d)</string>
     <string name="rates_goals_label">My goals (%1$d)</string>
     <string name="rates_by_date">by %1$s</string>
     <string name="cheap_label">less than</string>
     <string name="expensive_label">more than</string>
     <string name="new_goal_label">New goal</string>
+    <string name="replace_goal">Current goal was adjusted</string>
+    <string name="delete_item_dialog_label">Delete this item?</string>
+    <string name="ok_dialog_label">OK</string>
 
     <string-array name="bank_array">
         <item>@string/NB</item>

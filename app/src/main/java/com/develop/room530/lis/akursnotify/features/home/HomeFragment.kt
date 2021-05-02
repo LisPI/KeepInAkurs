@@ -27,6 +27,7 @@ import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import com.develop.room530.lis.akursnotify.databinding.DialogCreateGoalBinding
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
 import com.develop.room530.lis.akursnotify.model.mapFromDb
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -48,14 +49,28 @@ class HomeFragment : Fragment() {
     private val binding get() = requireNotNull(_binding)
 
     private val adapter = RateAdapter {
-        viewLifecycleOwner.lifecycleScope.launch {
-            getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)
-        }
+        AlertDialog.Builder(requireContext())
+            .setMessage(getString(R.string.delete_item_dialog_label))
+            .setPositiveButton(getString(R.string.ok_dialog_label)) { _, _ ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel_dialog_label)){ _, _ -> }
+            .create()
+            .show()
     }
     private val historyAdapter = HistoryRatesAdapter {
-        viewLifecycleOwner.lifecycleScope.launch {
-            getDatabase(requireContext()).nbrbHistoryDatabaseDao.deleteHistoryItem(it.date)
-        }
+        AlertDialog.Builder(requireContext())
+            .setMessage(getString(R.string.delete_item_dialog_label))
+            .setPositiveButton(getString(R.string.ok_dialog_label)) { _, _ ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    getDatabase(requireContext()).nbrbHistoryDatabaseDao.deleteHistoryItem(it.date)
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel_dialog_label)){ _, _ -> }
+            .create()
+            .show()
     }
 
     private var dialog: Dialog? = null
@@ -63,6 +78,13 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("home", "onCreate $this")
+
+        if (savedInstanceState != null) {
+            currency.value = savedInstanceState.getString(KEY_CURRENCY)
+            currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
+            comparingState.value = savedInstanceState.getFloat(COMPARING_STATE)
+            comparingStateNb.value = savedInstanceState.getFloat(COMPARING_STATE_NB)
+        } else getCurrency()
     }
 
     override fun onStart() {
@@ -213,12 +235,6 @@ class HomeFragment : Fragment() {
             getCurrency()
         }
 
-        if (savedInstanceState != null) { // FIXME after theme change bundle is not null but livedata is null
-            currency.value = savedInstanceState.getString(KEY_CURRENCY)
-            currencyNB.value = savedInstanceState.getString(KEY_CURRENCYNB)
-            comparingState.value = savedInstanceState.getFloat(COMPARING_STATE)
-            comparingStateNb.value = savedInstanceState.getFloat(COMPARING_STATE_NB)
-        } else getCurrency()
     }
 
     private fun showFabMenu() {
@@ -268,8 +284,7 @@ class HomeFragment : Fragment() {
             return
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-
+        lifecycleScope.launch {
             //val db = getDatabase(requireContext())
 
             val nbrbRateNetwork = NbrbApi.getUsdRateImpl() //"2020-11-23"
@@ -332,6 +347,7 @@ class HomeFragment : Fragment() {
         ).apply {
             calendar.set(2000, 0, 1)
             datePicker.minDate = calendar.timeInMillis
+            datePicker.maxDate = Date().time
         }
     }
 
@@ -344,26 +360,54 @@ class HomeFragment : Fragment() {
 
             builder
                 .setPositiveButton(
-                    "OK"
+                    getString(R.string.ok_dialog_label)
                 ) { dialog, id ->
                     viewLifecycleOwner.lifecycleScope.launch {
                         // проверить перекрытие текущих целей показать снэк "уже есть похожая цель - заменить?"
                         // сделать в настройках переход на системные для отключения пушей
-                        getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
-                            RatesGoal(
-                                bank = dialogBinding.selectBank.selectedItem.toString(),
-                                trend = if (dialogBinding.selectTrend.selectedItem.toString() == getString(
-                                        R.string.expensive_label
-                                    )
-                                ) 1
-                                else -1,
-                                rate = dialogBinding.goalEdit.editText?.text.toString()
+                        // отображать статус целей как-то
+
+                        val trendInt = if (dialogBinding.selectTrend.selectedItem.toString() == getString(
+                                R.string.expensive_label
                             )
-                        )
+                        ) 1
+                        else -1
+
+                        val goals = withContext(Dispatchers.IO) {
+                            getDatabase(requireContext()).ratesGoalDatabaseDao.getRatesGoalsOneTime()
+                        }
+
+                        val goalWithTheSameType =
+                            goals.firstOrNull() { goal -> goal.bank == dialogBinding.selectBank.selectedItem.toString() && goal.trend == trendInt }
+
+                        if(goalWithTheSameType != null){
+                            Snackbar.make(
+                                binding.root,
+                                R.string.replace_goal,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
+                                RatesGoal(
+                                    id = goalWithTheSameType.id,
+                                    bank = dialogBinding.selectBank.selectedItem.toString(),
+                                    trend = trendInt,
+                                    rate = dialogBinding.goalEdit.editText?.text.toString()
+                                )
+                            )
+                        }
+                        else{
+                            getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
+                                RatesGoal(
+                                    bank = dialogBinding.selectBank.selectedItem.toString(),
+                                    trend = trendInt,
+                                    rate = dialogBinding.goalEdit.editText?.text.toString()
+                                )
+                            )
+                        }
                     }
                 }
                 .setNegativeButton(
-                    getString(R.string.cancel_label)
+                    getString(R.string.cancel_dialog_label)
                 ) { dialog, id ->
                 }
             builder.create().apply {

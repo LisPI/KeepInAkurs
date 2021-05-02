@@ -3,6 +3,7 @@ package com.develop.room530.lis.akursnotify.features.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DiffUtil.DiffResult.NO_POSITION
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.develop.room530.lis.akursnotify.R
@@ -25,7 +26,7 @@ class RateAdapter(private val onClick: (item: RatesGoal) -> Unit) :
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = GoalCardBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(binding).apply {
-            itemView.setOnClickListener { onClick.invoke(getItem(adapterPosition)) }
+            itemView.setOnClickListener { if(adapterPosition != NO_POSITION) onClick.invoke(getItem(adapterPosition)) }
         }
     }
 

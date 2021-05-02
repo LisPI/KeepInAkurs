@@ -14,7 +14,7 @@ interface RatesGoalsDao {
     @Query("select * from ratesgoal")
     fun getRatesGoalsOneTime(): List<RatesGoal>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRatesGoal(vararg ratesGoal: RatesGoal)
 
     @Query("DELETE FROM ratesgoal")
