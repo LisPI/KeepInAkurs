@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 
 private const val SETTINGS_NAME = "user_preferences"
 const val DEFAULT_WORK_INTERVAL = 4F
-const val DEFAULT_PUSH_SETTINGS = false
+const val DEFAULT_PUSH_SETTINGS = true
 const val DEFAULT_THEME_SETTINGS = false
 val Context.dataStore by preferencesDataStore(name = SETTINGS_NAME)
 
