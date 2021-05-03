@@ -6,6 +6,7 @@
     <string name="Akurs">A-Kurs</string>
     <string name="app_pref" translatable="false">APP_PREF</string>
     <string name="onboarding_complete" translatable="false">OnboardingComplete</string>
+    <string name="last_value_for_no_internet" translatable="false">&lt;font color=gray>%1$s&lt;/font></string>
     <string name="done_message">OK!</string>
     <string name="onboarding_message">Use app for get fresh updates of rates, view charts, schedule push notifications</string>
     <string name="info_nav_label">Info</string>
@@ -21,7 +22,7 @@
     <string name="goal_reached">Goal - %1$s %2$s %3$s reached!</string>
     <string name="theme_switch_label">Night theme</string>
     <string name="card_label" translatable="false">card label</string>
-    <string name="no_internet_message">Check your Internet connection</string>
+    <string name="no_internet_message">Check your connection</string>
     <string name="channelId">Rates</string>
     <string name="interestRate">Goals reached!</string>
     <string name="background_updates_slider_label">Background updates</string>

@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +45,7 @@ class HomeFragment : Fragment() {
     private var currencyNB = MutableLiveData<String>()
     private var comparingState = MutableLiveData<Float>()
     private var comparingStateNb = MutableLiveData<Float>()
+    private var showSnackBar = MutableLiveData<Boolean>(false)
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -56,7 +58,7 @@ class HomeFragment : Fragment() {
                     getDatabase(requireContext()).ratesGoalDatabaseDao.deleteGoal(it.id)
                 }
             }
-            .setNegativeButton(getString(R.string.cancel_dialog_label)){ _, _ -> }
+            .setNegativeButton(getString(R.string.cancel_dialog_label)) { _, _ -> }
             .create()
             .show()
     }
@@ -68,7 +70,7 @@ class HomeFragment : Fragment() {
                     getDatabase(requireContext()).nbrbHistoryDatabaseDao.deleteHistoryItem(it.date)
                 }
             }
-            .setNegativeButton(getString(R.string.cancel_dialog_label)){ _, _ -> }
+            .setNegativeButton(getString(R.string.cancel_dialog_label)) { _, _ -> }
             .create()
             .show()
     }
@@ -132,6 +134,18 @@ class HomeFragment : Fragment() {
         binding.alfaRateCard.rateLabel.text = getString(R.string.Akurs)
         binding.nbrbRateCard.rateLabel.text = getString(R.string.NB)
 
+        showSnackBar.observe(viewLifecycleOwner) {
+            if (it == true) {
+                Snackbar.make(
+                    binding.root,
+                    R.string.no_internet_message,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+                showSnackBar.value = false
+            }
+        }
+
         binding.goalsCard.rates.adapter = adapter
         binding.historyCard.rates.adapter = historyAdapter
 
@@ -186,12 +200,28 @@ class HomeFragment : Fragment() {
         currency.observe(
             viewLifecycleOwner,
             { newValue ->
-                binding.alfaRateCard.rate.text = newValue
+                if (newValue == getString(R.string.no_internet_message)) {
+                   lifecycleScope.launch {
+                       val lastValue = withContext(Dispatchers.IO){getDatabase(requireContext()).akursDatabaseDao.getLastAkurs(1)}
+                            .firstOrNull()?.rate ?: getString(R.string.no_data_label)
+                       binding.alfaRateCard.rate.text =
+                           Html.fromHtml(getString(R.string.last_value_for_no_internet, lastValue))
+                    }
+                } else
+                    binding.alfaRateCard.rate.text = newValue
             })
         currencyNB.observe(
             viewLifecycleOwner,
             { newValue ->
-                binding.nbrbRateCard.rate.text = newValue
+                if (newValue == getString(R.string.no_internet_message)) {
+                    lifecycleScope.launch {
+                        val lastValue = withContext(Dispatchers.IO){getDatabase(requireContext()).nbrbDatabaseDao.getLastNbrbKurs(1)}
+                            .firstOrNull()?.rate ?: getString(R.string.no_data_label)
+                        binding.nbrbRateCard.rate.text =
+                            Html.fromHtml(getString(R.string.last_value_for_no_internet, lastValue))
+                    }
+                } else
+                    binding.nbrbRateCard.rate.text = newValue
             })
 
         binding.fabHistory.setOnClickListener {
@@ -277,9 +307,9 @@ class HomeFragment : Fragment() {
 
     private fun getCurrency() {
         if (checkInternet() != true) {
-            // FIXME snackbar?
             currency.value = getString(R.string.no_internet_message)
-            currencyNB.value = ""
+            currencyNB.value = getString(R.string.no_internet_message)
+            showSnackBar.value = true
             return
         }
 
@@ -366,11 +396,12 @@ class HomeFragment : Fragment() {
                         // сделать в настройках переход на системные для отключения пушей
                         // отображать статус целей как-то
 
-                        val trendInt = if (dialogBinding.selectTrend.selectedItem.toString() == getString(
-                                R.string.expensive_label
-                            )
-                        ) 1
-                        else -1
+                        val trendInt =
+                            if (dialogBinding.selectTrend.selectedItem.toString() == getString(
+                                    R.string.expensive_label
+                                )
+                            ) 1
+                            else -1
 
                         val goals = withContext(Dispatchers.IO) {
                             getDatabase(requireContext()).ratesGoalDatabaseDao.getRatesGoalsOneTime()
@@ -379,7 +410,7 @@ class HomeFragment : Fragment() {
                         val goalWithTheSameType =
                             goals.firstOrNull() { goal -> goal.bank == dialogBinding.selectBank.selectedItem.toString() && goal.trend == trendInt }
 
-                        if(goalWithTheSameType != null){
+                        if (goalWithTheSameType != null) {
                             Snackbar.make(
                                 binding.root,
                                 R.string.replace_goal,
@@ -393,8 +424,7 @@ class HomeFragment : Fragment() {
                                     rate = dialogBinding.goalEdit.editText?.text.toString()
                                 )
                             )
-                        }
-                        else{
+                        } else {
                             getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
                                 RatesGoal(
                                     bank = dialogBinding.selectBank.selectedItem.toString(),
