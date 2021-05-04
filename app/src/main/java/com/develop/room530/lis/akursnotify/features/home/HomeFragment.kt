@@ -42,11 +42,11 @@ const val FAB_ANIM_DURATION = 500L
 
 class HomeFragment : Fragment() {
 
-    private var currency = MutableLiveData<String>()
+    private var currency = MutableLiveData<String>() //TODO init load message
     private var currencyNB = MutableLiveData<String>()
     private var comparingState = MutableLiveData<Float>()
     private var comparingStateNb = MutableLiveData<Float>()
-    private var showSnackBar = MutableLiveData<Boolean>(false)
+    private var showSnackBar = MutableLiveData(false)
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = requireNotNull(_binding)

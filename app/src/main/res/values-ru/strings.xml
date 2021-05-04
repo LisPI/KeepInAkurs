@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Держу в А-Курсе</string>
-    <string name="initMessage">Ожидайте</string>
+    <string name="loadingMessage">Загружаем</string>
     <string name="updateMessage">Обновляем</string>
     <string name="NB">Нацбанк</string>
     <string name="chart_legend">USD по %s</string>
     <string name="Akurs">А-Курс</string>
     <string name="done_message">Хорошо!</string>
-    <string name="onboarding_message">Смотри свежие курсы Нацбанка и Альфа Банка по услуге А-Курс \n Aнализируй данные на интерактивных графиках \n Настраивай уведомления</string>
+    <string name="onboarding_message">Смотри свежие курсы Нацбанка и Альфа-Банка по услуге А-Курс \n Aнализируй данные на интерактивных графиках \n Настраивай уведомления</string>
     <string name="info_nav_label">Инфо</string>
     <string name="charts_nav_label">Графики</string>
     <string name="settings_nav_label">Настройки</string>
