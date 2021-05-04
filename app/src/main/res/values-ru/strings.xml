@@ -6,7 +6,7 @@
     <string name="chart_legend">USD по %s</string>
     <string name="Akurs">А-Курс</string>
     <string name="done_message">Хорошо!</string>
-    <string name="onboarding_message">Смотрите свежие курсы Нацбанка и Альфа Банка по услуге А-Курс \n Aнализируйте данные на интерактивных графиках \n Настраивайте уведомления \n\n\n\n Здесь будут перелистываться экраны, по одной фразе на экран плюс картинка</string>
+    <string name="onboarding_message">Смотри свежие курсы Нацбанка и Альфа Банка по услуге А-Курс \n Aнализируй данные на интерактивных графиках \n Настраивай уведомления</string>
     <string name="info_nav_label">Инфо</string>
     <string name="charts_nav_label">Графики</string>
     <string name="settings_nav_label">Настройки</string>

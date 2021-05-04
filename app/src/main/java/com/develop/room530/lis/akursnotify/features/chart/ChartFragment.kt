@@ -145,10 +145,10 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
                 }
 
                 dataSet.valueTextColor = textColorPrimary
-                dataSet.lineWidth = 4f
+                dataSet.lineWidth = 3f
                 dataSet.setDrawCircles(true)
                 dataSet.circleHoleRadius = 0.5f
-                dataSet.setDrawValues(false)
+                dataSet.setDrawValues(true)
                 dataSets.add(dataSet)
             }
         }
@@ -172,6 +172,7 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
         xAxis.labelRotationAngle = 315f
         xAxis.setAvoidFirstLastClipping(true)
         xAxis.textColor = textColorPrimary
+        //xAxis.setLabelCount(10, true)
 
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
@@ -187,7 +188,7 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
 
         notifyDataSetChanged()
 
+        invalidate() //animateX(1000) not needed
         fitScreen()
-        animateX(1000) //invalidate() not needed
     }
 }

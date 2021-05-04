@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
+import com.develop.room530.lis.akursnotify.data.network.AlfaAkursRate
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
 import kotlinx.coroutines.isActive
@@ -66,10 +67,9 @@ class OnboardingActivity : AppCompatActivity() {
     private fun getInitRates() {
         lifecycleScope.launch {
             val nbrb = NbrbApi.getUsdRateHistoryImpl()
-            var akursRates =
-                AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(getDateWithOffset(0)))
+            var akursRates = emptyList<AlfaAkursRate>()
             var i = 1
-            while (isActive && i in 1..7) {
+            while (isActive && i in 0..7) {
                 Log.d("getInitRates", "akurs")
                 akursRates = AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(getDateWithOffset(-i)))
                 i++
