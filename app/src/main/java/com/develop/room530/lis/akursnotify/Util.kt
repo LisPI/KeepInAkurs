@@ -1,6 +1,8 @@
 package com.develop.room530.lis.akursnotify
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
@@ -162,4 +164,10 @@ fun Context.resolveThemeAttr(@AttrRes attrRes: Int): TypedValue {
     val typedValue = TypedValue()
     theme.resolveAttribute(attrRes, typedValue, true)
     return typedValue
+}
+
+fun checkInternet(context: Context): Boolean? {
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+    return activeNetwork?.isConnectedOrConnecting
 }

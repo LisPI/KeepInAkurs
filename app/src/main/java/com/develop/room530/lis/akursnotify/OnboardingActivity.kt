@@ -3,13 +3,14 @@ package com.develop.room530.lis.akursnotify
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -18,7 +19,8 @@ class OnboardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onboarding)
 
-        getInitRates()
+        if (checkInternet(this) == true)
+            getInitRates()
 
         findViewById<Button>(R.id.complete_btn).setOnClickListener {
             val sp =
@@ -34,13 +36,14 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun getInitRates() {
-        CoroutineScope(Dispatchers.Main).launch {
-
+        lifecycleScope.launch {
             var date = getDateWithOffset(0)
             val nbrb = NbrbApi.getUsdRateImpl(getDateMinusFormat(date)) //"2020-11-23"
-            var akursRates = AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(date)) //"01.12.2020"
-            while (akursRates.isEmpty()) {
+            var akursRates =
+                AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(date)) //"01.12.2020"
+            while (akursRates.isEmpty() && isActive) {
                 date = getDateWithOffset(-1, date)
+                Log.d("getInitRates", "akurs")
                 akursRates = AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(date))
             }
 

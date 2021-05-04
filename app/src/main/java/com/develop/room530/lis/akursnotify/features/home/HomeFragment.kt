@@ -5,8 +5,6 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
@@ -29,7 +27,10 @@ import com.develop.room530.lis.akursnotify.databinding.DialogCreateGoalBinding
 import com.develop.room530.lis.akursnotify.databinding.FragmentHomeBinding
 import com.develop.room530.lis.akursnotify.model.mapFromDb
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 const val KEY_CURRENCY = "key_currency"
@@ -306,7 +307,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getCurrency() {
-        if (checkInternet() != true) {
+        if (checkInternet(requireContext()) != true) {
             currency.value = getString(R.string.no_internet_message)
             currencyNB.value = getString(R.string.no_internet_message)
             showSnackBar.value = true
@@ -346,13 +347,6 @@ class HomeFragment : Fragment() {
             currency.value =
                 akursRates.firstOrNull()?.rate?.format(4) ?: getString(R.string.no_data_label)
         }
-    }
-
-    private fun checkInternet(): Boolean? {
-        val cm = this@HomeFragment.requireActivity()
-            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-        return activeNetwork?.isConnectedOrConnecting
     }
 
     private fun getDatePickerDialog(): DatePickerDialog {

@@ -77,7 +77,7 @@ object AlfaApi {
                 }
             }
         } catch (e: Exception) {
-            Log.d("error", e.toString())
+            Log.d("error $date", e.toString())
             return emptyList()
         }
     }
