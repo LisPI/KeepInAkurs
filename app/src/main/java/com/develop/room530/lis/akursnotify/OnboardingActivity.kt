@@ -67,11 +67,11 @@ class OnboardingActivity : AppCompatActivity() {
     private fun getInitRates() {
         lifecycleScope.launch {
             val nbrb = NbrbApi.getUsdRateHistoryImpl()
-            var akursRates = emptyList<AlfaAkursRate>()
-            var i = 1
+            val akursRates = mutableListOf<AlfaAkursRate>()
+            var i = 0
             while (isActive && i in 0..7) {
-                Log.d("getInitRates", "akurs")
-                akursRates = AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(getDateWithOffset(-i)))
+                Log.d("getInitRates $i", "akurs")
+                akursRates.addAll(AlfaApi.getAkursRatesOnDateImpl(getDateDotFormat(getDateWithOffset(-i))))
                 i++
             }
 
