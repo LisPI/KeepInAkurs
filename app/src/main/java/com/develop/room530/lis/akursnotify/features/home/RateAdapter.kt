@@ -16,8 +16,16 @@ class RateAdapter(private val onClick: (item: RatesGoal) -> Unit) :
         fun bind(item: RatesGoal) {
             with(binding) {
                 rate.text = item.rate.format(4)
-                rateLabel.text = item.bank
-                rateTrend.text = if (item.trend < 0) binding.rateTrend.context.getString(R.string.cheap_label) else binding.rateTrend.context.getString(R.string.expensive_label)
+                rateLabel.text =
+                    if (item.bank == binding.rateTrend.context.getString(
+                            R.string.NB_non_locale
+                        )
+                    ) binding.rateTrend.context.getString(R.string.NB)
+                    else binding.rateTrend.context.getString(R.string.Akurs)
+                rateTrend.text =
+                    if (item.trend < 0) binding.rateTrend.context.getString(R.string.cheap_label) else binding.rateTrend.context.getString(
+                        R.string.expensive_label
+                    )
             }
         }
     }
@@ -26,7 +34,13 @@ class RateAdapter(private val onClick: (item: RatesGoal) -> Unit) :
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = GoalCardBinding.inflate(layoutInflater, parent, false)
         return ViewHolder(binding).apply {
-            itemView.setOnClickListener { if(adapterPosition != NO_POSITION) onClick.invoke(getItem(adapterPosition)) }
+            itemView.setOnClickListener {
+                if (adapterPosition != NO_POSITION) onClick.invoke(
+                    getItem(
+                        adapterPosition
+                    )
+                )
+            }
         }
     }
 

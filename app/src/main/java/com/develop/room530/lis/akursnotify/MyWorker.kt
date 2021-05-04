@@ -16,6 +16,7 @@ import com.develop.room530.lis.akursnotify.data.database.getDatabase
 import com.develop.room530.lis.akursnotify.data.database.saveRatesInDb
 import com.develop.room530.lis.akursnotify.data.network.AlfaApi
 import com.develop.room530.lis.akursnotify.data.network.NbrbApi
+import com.develop.room530.lis.akursnotify.features.settings.DEFAULT_PUSH_SETTINGS
 import com.develop.room530.lis.akursnotify.features.settings.PrefsKeys
 import com.develop.room530.lis.akursnotify.features.settings.dataStore
 import com.develop.room530.lis.akursnotify.model.mapFromDb
@@ -46,8 +47,8 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
             getDatabase(appContext).nbrbDatabaseDao.getLastNbrbKurs(1).map { mapFromDb(it) }
         }.firstOrNull()
 
-        val pushEnabled = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH] }
-        if (pushEnabled == true) {
+        val pushEnabled = runBlocking { appContext.dataStore.data.first()[PrefsKeys.PUSH] ?: DEFAULT_PUSH_SETTINGS }
+        if (pushEnabled) {
 
             val goals = withContext(Dispatchers.IO) {
                 getDatabase(appContext).ratesGoalDatabaseDao.getRatesGoalsOneTime()
@@ -56,11 +57,18 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
             Log.d("worker for goals", "$goals")
 
             fun StringBuilder.appendIfNeeded(goal: RatesGoal, rate: Float, trendString: String) {
+
+                val bank = if (goal.bank == appContext.getString(
+                        R.string.NB_non_locale
+                    )
+                ) appContext.getString(R.string.NB)
+                else appContext.getString(R.string.Akurs)
+
                 if ((-goal.rate.toFloat() + rate) * goal.trend > 0)
                     appendLine(
                         appContext.getString(
                             R.string.goal_reached,
-                            goal.bank,
+                            bank,
                             trendString,
                             goal.rate
                         )
@@ -73,12 +81,12 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
                     if (goal.trend == -1) appContext.getString(R.string.cheap_label)
                     else appContext.getString(R.string.expensive_label)
 
-                if (goal.bank == appContext.getString(R.string.NB)) {
+                if (goal.bank == appContext.getString(R.string.NB_non_locale)) {
                     lastNbrbRate?.let {
                         notificationText.appendIfNeeded(goal, it.rate, trendString)
                     }
                 }
-                if (goal.bank == appContext.getString(R.string.Akurs)) {
+                if (goal.bank == appContext.getString(R.string.ALFA_non_locale)) {
                     lastAkursRate?.let {
                         notificationText.appendIfNeeded(goal, it.rate, trendString)
                     }

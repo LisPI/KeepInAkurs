@@ -46,6 +46,8 @@
     <string name="delete_goal_item_dialog_label">Delete this goal?</string>
     <string name="delete_history_item_dialog_label">Delete this rate from history?</string>
     <string name="ok_dialog_label">OK</string>
+    <string name="NB_non_locale" translatable="false">NB</string>
+    <string name="ALFA_non_locale" translatable="false">ALFA</string>
 
     <string-array name="bank_array">
         <item>@string/NB</item>

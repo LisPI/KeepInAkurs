@@ -390,19 +390,25 @@ class HomeFragment : Fragment() {
                         // сделать в настройках переход на системные для отключения пушей
                         // отображать статус целей как-то
 
-                        val trendInt =
+                        val selectedTrendInt =
                             if (dialogBinding.selectTrend.selectedItem.toString() == getString(
                                     R.string.expensive_label
                                 )
                             ) 1
                             else -1
 
+                        val selectedBank = if (dialogBinding.selectBank.selectedItem.toString() == getString(
+                                R.string.NB
+                            )
+                        ) getString(R.string.NB_non_locale)
+                        else getString(R.string.ALFA_non_locale)
+
                         val goals = withContext(Dispatchers.IO) {
                             getDatabase(requireContext()).ratesGoalDatabaseDao.getRatesGoalsOneTime()
                         }
 
                         val goalWithTheSameType =
-                            goals.firstOrNull() { goal -> goal.bank == dialogBinding.selectBank.selectedItem.toString() && goal.trend == trendInt }
+                            goals.firstOrNull() { goal -> goal.bank == selectedBank && goal.trend == selectedTrendInt }
 
                         if (goalWithTheSameType != null) {
                             Snackbar.make(
@@ -413,16 +419,16 @@ class HomeFragment : Fragment() {
                             getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
                                 RatesGoal(
                                     id = goalWithTheSameType.id,
-                                    bank = dialogBinding.selectBank.selectedItem.toString(),  // FIXME don't save localization string!!!!!!!!!!!!!!!
-                                    trend = trendInt,
+                                    bank = selectedBank,
+                                    trend = selectedTrendInt,
                                     rate = dialogBinding.goalEdit.editText?.text.toString()
                                 )
                             )
                         } else {
                             getDatabase(requireContext()).ratesGoalDatabaseDao.insertRatesGoal(
                                 RatesGoal(
-                                    bank = dialogBinding.selectBank.selectedItem.toString(),
-                                    trend = trendInt,
+                                    bank = selectedBank,
+                                    trend = selectedTrendInt,
                                     rate = dialogBinding.goalEdit.editText?.text.toString()
                                 )
                             )
