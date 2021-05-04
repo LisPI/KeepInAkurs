@@ -8,13 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.develop.room530.lis.akursnotify.R
 import com.develop.room530.lis.akursnotify.databinding.FragmentChartBinding
 import com.develop.room530.lis.akursnotify.getDateHHMMDDMMFormatFromLong
 import com.develop.room530.lis.akursnotify.model.AlfaRateModel
 import com.develop.room530.lis.akursnotify.model.NbRbRateModel
 import com.develop.room530.lis.akursnotify.model.RateModel
+import com.develop.room530.lis.akursnotify.resolveColorAttr
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -74,11 +77,13 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val color = requireContext().resolveColorAttr(android.R.attr.textColorPrimary)
+
         viewModel.rates.observe(viewLifecycleOwner, {
             val a = viewModel.alfaRatesData.value
             val b = viewModel.nbrbRatesData.value
             if (a != null && b != null) {
-                binding.chart.printChart(listOf(a, b))
+                binding.chart.printChart(listOf(a, b), color)
             }
         })
 
@@ -90,11 +95,11 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
                     viewModel.updateRatesForChart(1)
                 }
                 binding.chip2.id -> {
-                    binding.chart.setTouchEnabled(true)
+                    binding.chart.setTouchEnabled(false)
                     viewModel.updateRatesForChart(2)
                 }
                 binding.chip3.id -> {
-                    binding.chart.setTouchEnabled(true)
+                    binding.chart.setTouchEnabled(false)
                     viewModel.updateRatesForChart(3)
                 }
                 binding.chip4.id -> {
@@ -111,13 +116,13 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
         super.onDestroyView()
     }
 
-    private fun LineChart.printChart(ratesData: List<List<RateModel>>) {
+    private fun LineChart.printChart(ratesData: List<List<RateModel>>, textColorPrimary: Int) {
         val dataSets = mutableListOf<ILineDataSet>()
         ratesData.forEach {
             if (it.isNotEmpty()) {
                 val label = when (it.first()) {
-                    is AlfaRateModel -> "USD по А-Курс"
-                    is NbRbRateModel -> "USD по НБ"
+                    is AlfaRateModel -> getString(R.string.chart_legend, getString(R.string.Akurs))
+                    is NbRbRateModel -> getString(R.string.chart_legend, getString(R.string.NB))
                 }
 
                 val dataSet = LineDataSet(it.map { rate ->
@@ -134,6 +139,16 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
 
                 dataSet.valueTextSize = 12F
 
+                dataSet.circleColors = when (it.first()) {
+                    is AlfaRateModel -> listOf(Color.RED)
+                    is NbRbRateModel -> listOf(Color.GREEN)
+                }
+
+                dataSet.valueTextColor = textColorPrimary
+                dataSet.lineWidth = 4f
+                dataSet.setDrawCircles(true)
+                dataSet.circleHoleRadius = 0.5f
+                dataSet.setDrawValues(false)
                 dataSets.add(dataSet)
             }
         }
@@ -142,9 +157,21 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
         data.isHighlightEnabled = false
 
         setDrawBorders(true)
+        description.text = ""
+        legend.textSize = 14F
+        legend.textColor = textColorPrimary
+        setNoDataText("")
+        setExtraOffsets(20F, 10F, 20F, 10F)
+
+        axisLeft.textColor = textColorPrimary
+        axisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        axisRight.isEnabled = false
+
         xAxis.isGranularityEnabled = true
-        //xAxis.granularity = 60 *1F
+        xAxis.granularity = 60 * 1F//FIXME
         xAxis.labelRotationAngle = 315f
+        xAxis.setAvoidFirstLastClipping(true)
+        xAxis.textColor = textColorPrimary
 
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
@@ -152,19 +179,15 @@ class ChartFragment : Fragment() { // TODO use constructor with layout parameter
             }
         }
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        description.text = ""
+
         this.data = data
         this.data.notifyDataChanged()
 
-        axisRight.isEnabled = false
-        legend.textSize = 14F
-        setNoDataText("")
-        setExtraOffsets(10F, 10F, 20F, 10F)
-
-        setMaxVisibleValueCount(30)
+        setMaxVisibleValueCount(20)
 
         notifyDataSetChanged()
 
-        invalidate()
+        fitScreen()
+        animateX(1000) //invalidate() not needed
     }
 }

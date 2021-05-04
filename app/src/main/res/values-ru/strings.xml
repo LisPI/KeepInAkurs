@@ -3,6 +3,7 @@
     <string name="initMessage">Ожидайте</string>
     <string name="updateMessage">Обновляем</string>
     <string name="NB">Нацбанк</string>
+    <string name="chart_legend">USD по %s</string>
     <string name="Akurs">А-Курс</string>
     <string name="done_message">Хорошо!</string>
     <string name="onboarding_message">Смотрите свежие курсы, анализируйте данные на интерактивных графиках, настраивайте пуш-уведомления. Здесь будут перелистываться экраны, по одной фразе на экран плюс картинка</string>
@@ -12,11 +13,11 @@
     <string name="chip_label_one">3 дня</string>
     <string name="chip_label_two">10 дней</string>
     <string name="chip_label_three">1 месяц</string>
-    <string name="chip_label_four">свободный выбор</string>
+    <string name="chip_label_four">интерактив</string>
     <string name="no_data_label">Нет данных</string>
     <string name="notification_switch_label">Уведомлять о целях</string>
     <string name="notification_goal_hint">Уведомлять при курсе %1$s</string>
-    <string name="theme_switch_label">Ночная тема</string>
+    <string name="theme_switch_label">Темная тема</string>
     <string name="no_internet_message">Пропал интернет(</string>
     <string name="channelId">Интересующие курсы</string>
     <string name="interestRate">Цели достигнуты!</string>

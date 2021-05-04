@@ -4,6 +4,7 @@
     <string name="updateMessage">Updating</string>
     <string name="NB">National</string>
     <string name="Akurs">A-Kurs</string>
+    <string name="chart_legend">USD by %s</string>
     <string name="app_pref" translatable="false">APP_PREF</string>
     <string name="onboarding_complete" translatable="false">OnboardingComplete</string>
     <string name="last_value_for_no_internet" translatable="false">&lt;font color=gray>%1$s&lt;/font></string>
