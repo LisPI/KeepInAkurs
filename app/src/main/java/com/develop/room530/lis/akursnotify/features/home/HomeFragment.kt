@@ -317,14 +317,14 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             //val db = getDatabase(requireContext())
 
-            val nbrbRateNetwork = NbrbApi.getUsdRateImpl() //"2020-11-23"
+            val nbrbRateNetwork = NbrbApi.getUsdRateHistoryImpl() //"2020-11-23"
             val akursRatesNetwork = AlfaApi.getAkursRatesOnDateImpl() //"01.12.2020"
 
             if (isActive)
                 saveRatesInDb(
                     requireContext(),
                     akursRatesNetwork,
-                    nbrbRateNetwork?.let { listOf(it) })
+                    nbrbRateNetwork)
             val akursRates = withContext(Dispatchers.IO) {
                 getDatabase(requireContext()).akursDatabaseDao.getLastAkurs(2).map { mapFromDb(it) }
             }
