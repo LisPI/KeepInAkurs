@@ -21,6 +21,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/card_barrier"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:barrierDirection="bottom"
+                        app:constraint_referenced_ids="alfa_rate_card,nbrb_rate_card" />
+
                 <include
                         android:id="@+id/alfa_rate_card"
                         layout="@layout/rate_card"
@@ -60,7 +67,7 @@
                         app:layout_constrainedWidth="true"
                         app:layout_constraintEnd_toEndOf="@+id/nbrb_rate_card"
                         app:layout_constraintStart_toStartOf="@+id/alfa_rate_card"
-                        app:layout_constraintTop_toBottomOf="@+id/alfa_rate_card" />
+                        app:layout_constraintTop_toBottomOf="@+id/card_barrier" />
 
                 <include
                         android:id="@+id/history_card"

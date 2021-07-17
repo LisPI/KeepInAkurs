@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -24,8 +25,19 @@ interface NbrbApiService {
         @Query(value = "ondate") date: String = getDateMinusFormat(getDateWithOffset(0))   // 2020-11-30
     ): NbrbModel
 
+    @GET("api/exrates/rates/431")
+    suspend fun getUsdRateNew(
+        @Query(value = "ondate") date: String = getDateMinusFormat(getDateWithOffset(0))   // 2020-11-30
+    ): NbrbModel
+
     @GET("api/exrates/rates/dynamics/145")
     suspend fun getUsdRatesHistory(
+        @Query(value = "startdate") from: String = getDateMinusFormat(getDateWithOffset(-7)), // 2020-11-30
+        @Query(value = "enddate") to: String = getDateMinusFormat(getDateWithOffset(+1)),
+    ): List<NbrbModel>
+
+    @GET("api/exrates/rates/dynamics/431")
+    suspend fun getUsdRatesHistoryNew(
         @Query(value = "startdate") from: String = getDateMinusFormat(getDateWithOffset(-7)), // 2020-11-30
         @Query(value = "enddate") to: String = getDateMinusFormat(getDateWithOffset(+1)),
     ): List<NbrbModel>
@@ -45,22 +57,47 @@ object NbrbApi {
     suspend fun getUsdRateImpl(date: String = getDateMinusFormat(getDateWithOffset(0))): NbrbModel? {
         return try {
             withContext(Dispatchers.IO) {
-                service.getUsdRate(date)
+                service.getUsdRateNew(date)
             }
         } catch (e: Exception) {
-            Log.d("error", e.toString())
-            null
+            if (e is HttpException && e.code() == 404)
+                try {
+                    withContext(Dispatchers.IO) {
+                        service.getUsdRate(date)
+                    }
+                } catch (e: Exception) {
+                    Log.d("error in error", e.toString())
+                    null
+                }
+            else {
+                Log.d("error", e.toString())
+                null
+            }
         }
     }
 
-    suspend fun getUsdRateHistoryImpl(from: String = getDateMinusFormat(getDateWithOffset(-7)), to: String = getDateMinusFormat(getDateWithOffset(+1))): List<NbrbModel> {
+    suspend fun getUsdRateHistoryImpl(
+        from: String = getDateMinusFormat(getDateWithOffset(-7)),
+        to: String = getDateMinusFormat(getDateWithOffset(+1))
+    ): List<NbrbModel> {
         return try {
             withContext(Dispatchers.IO) {
-                service.getUsdRatesHistory(from, to)
+                service.getUsdRatesHistoryNew(from, to)
             }
         } catch (e: Exception) {
-            Log.d("error", e.toString())
-            emptyList()
+            if (e is HttpException && e.code() == 404)
+                try {
+                    withContext(Dispatchers.IO) {
+                        service.getUsdRatesHistory(from, to)
+                    }
+                } catch (e: Exception) {
+                    Log.d("error in error", e.toString())
+                    emptyList()
+                }
+            else {
+                Log.d("error", e.toString())
+                emptyList()
+            }
         }
     }
 }
