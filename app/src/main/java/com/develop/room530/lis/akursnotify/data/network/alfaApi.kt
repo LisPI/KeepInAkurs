@@ -13,6 +13,11 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import java.util.*
 
+data class AlfaDtoModelWrapper(
+    val Title: String,
+    val DATA: List<AlfaDtoModel>
+)
+
 data class AlfaDtoModel(
     val title: String,
     val currenciesData: List<CurrencyRates>
@@ -45,7 +50,7 @@ interface AlfaApiService {
     @POST("exchange/digital/")
     suspend fun getAkursRatesOnDate(
         @Field("selectedDate") date: String
-    ): List<AlfaDtoModel>
+    ): AlfaDtoModelWrapper
 }
 
 object AlfaApi {
@@ -64,7 +69,7 @@ object AlfaApi {
             val data = withContext(Dispatchers.IO) {
                 service.getAkursRatesOnDate(date)
             }
-            val akursData = data.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
+            val akursData = data.DATA.filter { it.title.contains("A-Курс") }  // A - EN character !!!!!
 
             return akursData.flatMap {
                 it.currenciesData.map { cur ->
