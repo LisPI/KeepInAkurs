@@ -42,14 +42,14 @@ class ChartViewModel(application: Application) : AndroidViewModel(application) {
         database: CurrencyDatabase,
         body: CurrencyDatabase.() -> LiveData<List<T>>
     ) =
-        Transformations.switchMap(chartState) {
+        chartState.switchMap {
             val offset = when (it) {
                 1 -> -3
                 2 -> -10
                 3 -> -30
                 else -> - 300 // FIXME
             }
-            Transformations.map(database.body()) { rates ->
+            database.body().map { rates ->
                 rates
                     .filter { rate -> rate.date > getDateWithOffset(offset) }
                     .map { rate -> mapFromDb(rate) }
