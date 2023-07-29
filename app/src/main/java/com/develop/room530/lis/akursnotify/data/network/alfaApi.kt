@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
@@ -57,7 +59,12 @@ object AlfaApi {
     private val gson = GsonBuilder()
         .setDateFormat("yyyy-MM-dd HH:mm:ss")
         .create()
+    private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .build()
     private val retrofit: Retrofit = Retrofit.Builder()
+        .client(okHttpClient)
         .baseUrl("https://www.alfabank.by/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()

@@ -51,11 +51,7 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-//    FIX for API 19 support
-//    implementation ("com.squareup.okhttp3:okhttp:3.12.12"){
-//        force = true
-//    }
-//    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.12'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"

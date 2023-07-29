@@ -105,7 +105,7 @@ class MyWorker(private val appContext: Context, workerParams: WorkerParameters) 
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(
             appContext, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val channelId = appContext.getString(R.string.channelId)
